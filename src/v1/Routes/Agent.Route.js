@@ -12,17 +12,17 @@ require("dotenv").config({ path: "../../../.env" });
 
 // const abc =require("../../../.env");
 ///env----------------------------------------
-// var ID = process.env.ID;
-// var SECRET = process.env.SECRET;
-// var BUCKET_NAME = process.env.BUCKET_NAME;
+var ID = process.env.ID;
+var Gopon_Key = process.env.Gopon;
+var BUCKET_NAME = process.env.BUCKET_NAME;
 //----------------------------------------------
-var ID = "AKIAU6GDVOUTY4EORUEX";
-var SECRET = "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";
-var BUCKET_NAME = "images.bangasreejewellers.in";
-console.log(SECRET, BUCKET_NAME, "s14");
+// var ID = "AKIAU6GDVOUTY4EORUEX";
+// var Gopon_Key = "HMe/UOx5TDG+kDfrPSfPNWNvbjCyaGkxfaN999Nh";
+// var BUCKET_NAME = "images.bangasreejewellers.in";
+// console.log(Gopon_Key, BUCKET_NAME, "s14");
 const s3 = new AWS.S3({
   accessKeyId: ID,
-  secretAccessKey: SECRET,
+  secretAccessKey: Gopon_Key,
 });
 
 const params = {
@@ -87,7 +87,7 @@ router.post(
     // Upload files to S3.
     console.log(req.files, "check");
     const uploadPromises = req.files.map((file) => {
-      console.log(SECRET, BUCKET_NAME, "d14");
+      console.log(Gopon_Key, BUCKET_NAME, "d14");
       console.log(file.fieldname);
       if (file.fieldname == "Photo") {
         const params = {
@@ -192,7 +192,7 @@ router.post(
     // Upload files to S3
     console.log(req.files, "check");
     const uploadPromises = req.files.map((file) => {
-      console.log(SECRET, BUCKET_NAME, "d14");
+      console.log(Gopon_Key, BUCKET_NAME, "d14");
       console.log(file.fieldname);
       if (file.fieldname == "NomineePhoto") {
         const params = {
@@ -247,7 +247,7 @@ router.post(
     // Upload files to S3
     console.log(req.files, "check");
     const uploadPromises = req.files.map((file) => {
-      console.log(SECRET, BUCKET_NAME, "d14");
+      console.log(Gopon_Key, BUCKET_NAME, "d14");
       console.log(file.fieldname);
       if (file.fieldname == "NomineePhoto") {
         const params = {
@@ -319,7 +319,7 @@ router.post(
 
     console.log(req.files, "check pic agent sub");
     const uploadPromises = req.files.map((file) => {
-      console.log(SECRET, BUCKET_NAME, "d14");
+      console.log(Gopon_Key, BUCKET_NAME, "d14");
       console.log(file.fieldname);
       if (file.fieldname == "receiptPic") {
         const params = {
