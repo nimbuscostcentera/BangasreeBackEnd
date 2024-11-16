@@ -21,13 +21,13 @@ const dotenv = require("dotenv");
 require("dotenv").config({ path: "../../../.env" });
 // const abc =require("../../../.env");
 ///env----------------------------------------
-// var ID = process.env.ID;
-// var SECRET = process.env.SECRET;
-// var BUCKET_NAME = process.env.BUCKET_NAME;
+var ID = process.env.ID;
+var SECRET = process.env.SECRET;
+var BUCKET_NAME = process.env.BUCKET_NAME;
 //----------------------------------------------
-var ID = "AKIAU6GDVOUTY4EORUEX";
-var SECRET = "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";
-var BUCKET_NAME = "images.bangasreejewellers.in";
+// var ID = "AKIAU6GDVOUTY4EORUEX";
+// var SECRET = "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";
+// var BUCKET_NAME = "images.bangasreejewellers.in";
 console.log(SECRET, BUCKET_NAME, "s14");
 const s3 = new AWS.S3({
   accessKeyId: ID,
@@ -83,12 +83,14 @@ const uploadCustomer = multer({
 });
 //--------------------------------------------------------------------------------------
 
-console.log("3"); 
-router.post("/login",Logger.Logreq, AuthController.securelogin,Logger.Logres);
- router.post("/token-generate",PermissonCheck.GenerateToken);
+console.log("3");
+router.post("/login", Logger.Logreq, AuthController.securelogin, Logger.Logres);
+router.post("/token-generate", PermissonCheck.GenerateToken);
 
 router.post(
-  "/agent-registration", uploadAgent.any(),PermissonCheck.verifyToken,
+  "/agent-registration",
+  uploadAgent.any(),
+  PermissonCheck.verifyToken,
   (req, res, next) => {
     // Upload files to S3.
     console.log(req.files, "check");
@@ -134,11 +136,15 @@ router.post(
         // Handle error
         res.status(500).json({ error: "Error uploading files to S3" });
       });
-  },Logger.Logreq ,
-  AuthController.AgentRegistration,Logger.Logres
+  },
+  Logger.Logreq,
+  AuthController.AgentRegistration,
+  Logger.Logres
 );
 router.post(
-  "/customer-registration",uploadCustomer.any(),PermissonCheck.verifyToken,
+  "/customer-registration",
+  uploadCustomer.any(),
+  PermissonCheck.verifyToken,
   (req, res, next) => {
     // Upload files to S3
     console.log(req.files, "check");
@@ -208,16 +214,26 @@ router.post(
         // Handle error
         res.status(500).json({ error: "Error uploading files to S3" });
       });
-  },Logger.Logreq ,
-  AuthController.CustomerRegistration,Logger.Logres
+  },
+  Logger.Logreq,
+  AuthController.CustomerRegistration,
+  Logger.Logres
 );
-router.post("/lead-registration",PermissonCheck.verifyToken,Logger.Logreq,  AuthController.LeadeRegistration,Logger.Logres);
+router.post(
+  "/lead-registration",
+  PermissonCheck.verifyToken,
+  Logger.Logreq,
+  AuthController.LeadeRegistration,
+  Logger.Logres
+);
 
 router.post(
-  "/superuser-registration",uploadSuperuser.any(),Logger.Logreq,
+  "/superuser-registration",
+  uploadSuperuser.any(),
+  Logger.Logreq,
   (req, res, next) => {
     // Upload files to S3
-    console.log(req.files,req.body, "req files");
+    console.log(req.files, req.body, "req files");
     const uploadPromises = req.files.map((file) => {
       console.log(SECRET, BUCKET_NAME, "d14");
       console.log(file.fieldname);
@@ -261,12 +277,24 @@ router.post(
         // Handle error
         res.status(500).json({ error: "Error uploading files to S3" });
       });
-  },Logger.Logreq ,
-  AuthController.superuserRegistration,Logger.Logres
+  },
+  Logger.Logreq,
+  AuthController.superuserRegistration,
+  Logger.Logres
 );
 
-router.post("/forget-password", Logger.Logreq,AuthController.forgetpass,Logger.Logres);
-router.post("/reset-password",Logger.Logreq , AuthController.resetpass,Logger.Logres);
+router.post(
+  "/forget-password",
+  Logger.Logreq,
+  AuthController.forgetpass,
+  Logger.Logres
+);
+router.post(
+  "/reset-password",
+  Logger.Logreq,
+  AuthController.resetpass,
+  Logger.Logres
+);
 router.post("/verify-token", PermissonCheck.verifyToken);
 
 // router.post("/loginauthcontroller/loginservices/login",securelogin);
