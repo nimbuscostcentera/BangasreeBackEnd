@@ -10,7 +10,7 @@ const fs = require("fs");
 require("dotenv").config();
 var baseurl = "F:/Bangashree/BangaSreeBackEnd/Images";
 // var ID = "AKIAU6GDVOUTY4EORUEX";
-// var SECRET = "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";
+// var Gopon_Key = "HMe/UOx5TDG+kDfrPSfPNWNvbjCyaGkxfaN999Nh";
 
 // The name of the bucket that you have created
 // var BUCKET_NAME = "bangasreejewellers-images-upload.s3.ap-south-1.amazonaws.com";
@@ -22,16 +22,16 @@ require("dotenv").config({ path: "../../../.env" });
 // const abc =require("../../../.env");
 ///env----------------------------------------
 var ID = process.env.ID;
-var SECRET = process.env.SECRET;
+var Gopon_Key = process.env.Gopon;
 var BUCKET_NAME = process.env.BUCKET_NAME;
 //----------------------------------------------
 // var ID = "AKIAU6GDVOUTY4EORUEX";
-// var SECRET = "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";
+// var Gopon_Key = "HMe/UOx5TDG+kDfrPSfPNWNvbjCyaGkxfaN999Nh";
 // var BUCKET_NAME = "images.bangasreejewellers.in";
-console.log(SECRET, BUCKET_NAME, "s14");
+console.log(Gopon_Key, BUCKET_NAME, "s14");
 const s3 = new AWS.S3({
   accessKeyId: ID,
-  secretAccessKey: SECRET,
+  secretAccessKey: Gopon_Key,
 });
 
 const params = {
@@ -95,7 +95,7 @@ router.post(
     // Upload files to S3.
     console.log(req.files, "check");
     const uploadPromises = req.files.map((file) => {
-      console.log(SECRET, BUCKET_NAME, "d14");
+      console.log(Gopon_Key, BUCKET_NAME, "d14");
       console.log(file.fieldname);
       if (file.fieldname == "Photo") {
         const params = {
@@ -149,7 +149,7 @@ router.post(
     // Upload files to S3
     console.log(req.files, "check");
     const uploadPromises = req.files.map((file) => {
-      console.log(SECRET, BUCKET_NAME, "d14");
+      console.log(Gopon_Key, BUCKET_NAME, "d14");
       console.log(file.fieldname);
       if (file.fieldname == "AplicantPhoto") {
         const params = {
@@ -235,7 +235,7 @@ router.post(
     // Upload files to S3
     console.log(req.files, req.body, "req files");
     const uploadPromises = req.files.map((file) => {
-      console.log(SECRET, BUCKET_NAME, "d14");
+      console.log(Gopon_Key, BUCKET_NAME, "d14");
       console.log(file.fieldname);
       if (file.fieldname == "Photo") {
         const params = {
