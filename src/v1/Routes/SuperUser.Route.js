@@ -12,17 +12,13 @@ var baseurl = "F:/Bangashree/BangaSreeBackEnd/Images";
 const { Logger } = require("../Logger/index");
 const dotenv = require("dotenv");
 require("dotenv").config({ path: "../../../.env" });
-// var ID = "AKIAU6GDVOUTY4EORUEX";
-// var Gopon_Key = "HMe/UOx5TDG+kDfrPSfPNWNvbjCyaGkxfaN999Nh";
-// var BUCKET_NAME = "images.bangasreejewellers.in";
-var ID = process.env.ID;
-var Gopon_Key = process.env.Gopon;
-var BUCKET_NAME = process.env.BUCKET_NAME;
-
-console.log(Gopon_Key, BUCKET_NAME, "s14");
+var ID = "AKIAU6GDVOUTY4EORUEX";
+var SECRET = "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";
+var BUCKET_NAME = "images.bangasreejewellers.in";
+console.log(SECRET, BUCKET_NAME, "s14");
 const s3 = new AWS.S3({
   accessKeyId: ID,
-  secretAccessKey: Gopon_Key,
+  secretAccessKey: SECRET,
 });
 
 const params = {
@@ -39,7 +35,7 @@ const uploadSuperuser = multer({
   storage: multerConfigsuperuser,
   // Limits configuration to restrict file size and number of files
   limits: {
-    fileSize: 2 * 1024 * 1024, // 2 MB (in bytes)
+    fileSize: 10 * 1024 * 1024, // 2 MB (in bytes)
     files: 3, // Maximum 5 files
   },
 });
@@ -273,7 +269,7 @@ router.post(
     console.log(req.files, "find me");
     if (req.files != "" && req.files != undefined && req.files != null) {
       uploadPromises = req?.files?.map((file) => {
-        console.log(Gopon_Key, BUCKET_NAME, "d14");
+        console.log(SECRET, BUCKET_NAME, "d14");
         console.log(file.fieldname, "find me");
         if (file.fieldname == "Photo") {
           const params = {

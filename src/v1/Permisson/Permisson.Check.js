@@ -75,45 +75,44 @@ class Permission {
   verifyToken(req, res, next) {
     const RefreshToken = req.header("RefreshToken");
     const AccessToken = req.header("Authorization");
-   console.log(AccessToken, RefreshToken, "my access");
+    console.log(AccessToken, RefreshToken, "my access");
     if (!AccessToken) {
       //console.log("no");
       return res.status(400).json({ response: " AccessToken is missing" });
     } else {
-     // console.log("hello");
+      // console.log("hello");
       try {
         const decoded = JWT.verify(AccessToken.split(" ")[1], SecreateKey);
         req.uuid = decoded.uuid;
-       console.log(decoded, "piku");
-       
-       UserMasters.findOne({
-        attributes: ["LogOut"],
-        where: { UUid: req.body.LoggerUUid || req.body.UUid },
-      })
-        .then((res15) => {
-          console.log(
-            res15?.dataValues?.LogOut,
-            "i am in permission check then"
-          );
-          let logout = res15?.dataValues?.LogOut;
-          if (logout == 1) {
-            return res.status(402).json({ response: "Permisson Changed" });
-          } else {
-            if (req.url == "/verify-token") {
-              console.log("yes", req.url);
-              return res.status(200).json({ response: "verified" });
+        console.log(decoded, req.body, "piku");
+
+        UserMasters.findOne({
+          attributes: ["LogOut"],
+          where: { UUid: req.body.LoggerUUid || req.body.UUid },
+        })
+          .then((res15) => {
+            console.log(
+              res15?.dataValues?.LogOut,
+              "i am in permission check then"
+            );
+            let logout = res15?.dataValues?.LogOut;
+            if (logout == 1) {
+              return res.status(402).json({ response: "Permisson Changed" });
+            } else {
+              if (req.url == "/verify-token") {
+                console.log("yes", req.url);
+                return res.status(200).json({ response: "verified" });
+              } else {
+                console.log("no", req.url);
+                next();
+              }
             }
-            else {
-              console.log("no", req.url);
-               next();
-            }
-          }})
+          })
           .catch((err) => {
             console.log(err, "i am in permission check catch");
           });
-        
       } catch (error) {
-       console.log(error);
+        console.log(error);
         if (error.name === "TokenExpiredError") {
           // Token has expired
           return res.status(401).json({ response: "Access Token has expired" });

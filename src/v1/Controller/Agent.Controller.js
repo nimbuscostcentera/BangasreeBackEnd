@@ -10,7 +10,7 @@ const {
   CollectionSubmissonService,
   SchemeAddCustomerService,
   LeadEditService,
-  DashBoardServices
+  DashBoardServices,
 } = require("../Services/index");
 class AgentController {
   async showagent(req, res, next) {
@@ -137,7 +137,7 @@ class AgentController {
     try {
       // console.log("controller", req.body);
       const CustomerCollectionResponse =
-        await CollectionSubmissonService.CollectionSubmisson(req, res, next);
+        await CollectionSubmissonService.CollectionSubmission(req, res, next);
       next();
       return CustomerCollectionResponse;
     } catch (err) {
@@ -234,18 +234,6 @@ class AgentController {
       );
       next();
       return getUserResponse;
-    } catch (err) {
-      console.log(err);
-      return res.status(400).json("error");
-    }
-  }
-  async colectionsubmisson(req, res, next) {
-    try {
-      // console.log("controller", req.body);
-      const CustomerCollectionResponse =
-        await CollectionSubmissonService.CollectionSubmission(req, res, next);
-      next();
-      return CustomerCollectionResponse;
     } catch (err) {
       console.log(err);
       return res.status(400).json("error");

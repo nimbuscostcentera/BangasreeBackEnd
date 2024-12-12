@@ -192,10 +192,10 @@ class AgentRegService {
                         });
                     })
                     .catch((err) => {
-                      console.log(err);
+                      console.log(err?.message,"check");
                       return res.status(400).json({
                         errMsg: false,
-                        response: "Registration failed." + err,
+                        response: "Registration failed." + err?.message,
                         msg: err,
                       });
                     });

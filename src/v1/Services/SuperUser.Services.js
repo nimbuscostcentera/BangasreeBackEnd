@@ -210,8 +210,8 @@ class SuperUserServices {
             } else {
               return res.status(200).json({
                 status: 500,
-                errmsg: true,
-                response: "NO Purity there",
+                errmsg: "NO Purity there",
+                response: [],
               });
             }
           })
@@ -236,7 +236,7 @@ class SuperUserServices {
       let date = new Date();
       if (ID_PURITY !== "") {
         console.log("i'm in");
-        
+
         usersw = await sq.sync().then(async () => {
           await Goldrates.findAll({
             where: {
@@ -287,56 +287,56 @@ class SuperUserServices {
     try {
       console.log(req.body, "hello sweety");
       var usersw;
-      const {CompanyCode} = req.body;
+      const { CompanyCode } = req.body;
       let date = new Date();
-        usersw = await sq.sync().then(async () => {
-          await Goldrates.findAll({
-            include: [
-              {
-                model: PurityMasters,
-                attributes: [], // Do not nest PurityMasters but join it
-              },
-            ],
-            attributes: [
-              "ID",
-              "CompanyCode",
-              "GOLD_RATE",
-              "CURRDATE",
-              [sq.col("puritymaster.PURITY"), "PURITY"], // Add PURITY to the parent object
-            ],
-          })
-            .then(async (res2) => {
-              console.log(res2);
+      usersw = await sq.sync().then(async () => {
+        await Goldrates.findAll({
+          include: [
+            {
+              model: PurityMasters,
+              attributes: [], // Do not nest PurityMasters but join it
+            },
+          ],
+          attributes: [
+            "ID",
+            "CompanyCode",
+            "GOLD_RATE",
+            "CURRDATE",
+            [sq.col("puritymaster.PURITY"), "PURITY"], // Add PURITY to the parent object
+          ],
+        })
+          .then(async (res2) => {
+            console.log(res2);
 
-              if (res2.length != 0) {
-                return res.status(200).json({
-                  status: 200,
-                  errmsg: false,
-                  response: res2,
-                });
-              } else {
-                return res.status(200).json({
-                  status: 500,
-                  errmsg: true,
-                  response: "Gold rate  not exists",
-                });
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-              return res.status(400).json({
-                errmsg: true,
-                response: err.message,
+            if (res2.length != 0) {
+              return res.status(200).json({
+                status: 200,
+                errmsg: false,
+                response: res2,
               });
+            } else {
+              return res.status(200).json({
+                status: 500,
+                errmsg: "Gold rate  not exists",
+                response: [],
+              });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            return res.status(400).json({
+              errmsg: true,
+              response: err.message,
             });
-          console.log("service1 ok");
-        });
-    
+          });
+        console.log("service1 ok");
+      });
+
       return usersw; //can not return a local variable of if else statement
       // const users =  AgentMasters.findAll();
     } catch (error) {
       console.log(error);
-      
+
       return res.status(500).json({ status: "FAILED", response: error });
     }
   }

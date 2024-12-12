@@ -17,7 +17,7 @@ class ApproveSchmService {
           },
         })
           .then(async (schemReg) => {
-            if (schemReg.length == 0) {
+
               Agntsw = await sq
                 .query(
                   "Update schememasters set Status=:st where SUUid in(:id) ",
@@ -35,13 +35,7 @@ class ApproveSchmService {
                 .catch((err) => {
                   return res.status(500).json({ errmsg: true, response: err });
                 });
-            } else {
-              return res.status(400).json({
-                errMsg: true,
-                response:
-                  "Alreday Asigned To A Customer You Can Not Edit This Scheme",
-              });
-            }
+
             console.log("service1 ok");
           })
           .catch((err) => {

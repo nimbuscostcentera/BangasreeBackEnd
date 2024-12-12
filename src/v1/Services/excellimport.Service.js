@@ -32,11 +32,11 @@ try{
     //  __filename='MasterTemplateFINAL.xlsx'
      
         // var workbook = xlsx.readFile(path.resolve(__dirname,'NewEntries-MasterTemplate-v3.0.xlsx')); 
-     var workbook = xlsx.readFile(path.resolve(__dirname,'Transaction_Template_JULFINAL.xlsx')); 
+     var workbook = xlsx.readFile(path.resolve(__dirname,'Transaction_Template_SEPT-OCTFINAL.xlsx')); 
    
 
     // Select the first sheet
-    var sheetName = workbook.SheetNames[1];
+    var sheetName = workbook.SheetNames[2];
     var sheet = workbook.Sheets[sheetName];
 
     // Convert the sheet to JSON object
@@ -616,7 +616,7 @@ length=data.length;
             var Nomineesignature = data[i].CustomerPhoneno + ".jpg";
             // var objreq = data;
    
-            console.log(StartDate,EndDate,"SCHEME REGISTER TEST");
+            console.log(StartDate,EndDate,i,"SCHEME REGISTER TEST");
             const Colluuid = uuidv4();
                   const Scheme = await SchemeMasters.findOne({
                           attributes: ["SUUid"],

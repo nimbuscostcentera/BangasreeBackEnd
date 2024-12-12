@@ -1,9 +1,9 @@
 const { sq } = require("../../DataBase/ormdb");
 const { Lotcollections } = require("../Model/LotCollection.Model");
+const { Op } = require("sequelize");
 const { QueryTypes } = require("sequelize");
 const moment = require("moment");
-
-class CollectionSubmissionService {
+class CollectionSubmissonService {
   async CollectionSubmission(req, res, next) {
     try {
       const {
@@ -251,5 +251,4 @@ class CollectionSubmissionService {
     }
   }
 }
-
-module.exports = new CollectionSubmissionService();
+module.exports = new CollectionSubmissonService();

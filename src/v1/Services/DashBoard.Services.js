@@ -265,6 +265,7 @@ class DashBoardServices {
       var UUid = req.body.UUid;
       var BranchId = req.body.BranchId;
       var SuperUserType = req.body.SuperUserType;
+      var today=req.body.today;
 
       var promises = [];
       console.log(req.body);
@@ -275,15 +276,17 @@ class DashBoardServices {
           (SELECT COUNT(AgentID) FROM agentmasters WHERE Status=1) AS TotalAgent,
           (SELECT COUNT(Id) FROM schemeregisters WHERE MaturityStatus=3) AS TotalMaturedAcc,
           (SELECT COUNT(SuperUserID) FROM superusermasters WHERE Status=1) AS TotalSuperUser,
-          (SELECT COALESCE(SUM(CollectedAmt), 0) FROM emitrans) AS TotalCollection`;
+          (SELECT COALESCE(SUM(CollectedAmt), 0) FROM emitrans where CollDate =:today  ) AS TotalCollection`;
+          qt.today = today;
         } else {
           sql = `SELECT
           (SELECT COUNT(CM.CustomerID) FROM customermasters AS CM,usermasters AS UM WHERE CM.Status=1 AND UM.UUid=CM.UUid  AND UM.BranchId=:BranchId) AS TotalCust,
           (SELECT COUNT(AM.AgentID) FROM agentmasters AS AM,usermasters AS UM WHERE AM.Status=1 AND UM.UUid=AM.UUid  AND UM.BranchId=:BranchId) AS TotalAgent,
           (SELECT COUNT(sr.Id) FROM schemeregisters sr,usermasters AS UM WHERE sr.MaturityStatus=3 AND UM.UUid=sr.UUid  AND UM.BranchId=:BranchId) AS TotalMaturedAcc,
           (SELECT COUNT(sm.SuperUserID) FROM superusermasters sm,usermasters AS UM WHERE sm.Status=1 AND UM.UUid=sm.UUid  AND UM.BranchId=:BranchId) AS TotalSuperUser,
-          (SELECT COALESCE(SUM(CollectedAmt), 0) FROM emitrans as et,usermasters AS UM WHERE  UM.UUid=et.CustomerUUid  AND UM.BranchId=12) AS TotalCollection`;
+          (SELECT COALESCE(SUM(CollectedAmt), 0) FROM emitrans as et,usermasters AS UM WHERE  UM.UUid=et.CustomerUUid  AND UM.BranchId=:BranchId and CollDate =:today ) AS TotalCollection`;
           qt.BranchId = BranchId;
+          qt.today = today;
         }
 
         sq.query(sql, { replacements: qt, type: QueryTypes.SELECT })

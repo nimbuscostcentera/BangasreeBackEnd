@@ -12,17 +12,17 @@ require("dotenv").config({ path: "../../../.env" });
 
 // const abc =require("../../../.env");
 ///env----------------------------------------
-var ID = process.env.ID;
-var Gopon_Key = process.env.Gopon;
-var BUCKET_NAME = process.env.BUCKET_NAME;
+// var ID = process.env.ID;
+// var SECRET = process.env.SECRET;
+// var BUCKET_NAME = process.env.BUCKET_NAME;
 //----------------------------------------------
-// var ID = "AKIAU6GDVOUTY4EORUEX";
-// var Gopon_Key = "HMe/UOx5TDG+kDfrPSfPNWNvbjCyaGkxfaN999Nh";
-// var BUCKET_NAME = "images.bangasreejewellers.in";
-// console.log(Gopon_Key, BUCKET_NAME, "s14");
+var ID = "AKIAU6GDVOUTY4EORUEX";
+var SECRET = "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";
+var BUCKET_NAME = "images.bangasreejewellers.in";
+console.log(SECRET, BUCKET_NAME, "s14");
 const s3 = new AWS.S3({
   accessKeyId: ID,
-  secretAccessKey: Gopon_Key,
+  secretAccessKey: SECRET,
 });
 
 const params = {
@@ -39,7 +39,7 @@ const uploadAgent = multer({
   storage: multerConfigagent,
   // Limits configuration to restrict file size and number of files
   limits: {
-    fileSize: 2 * 1024 * 1024, // 2 MB (in bytes)
+    fileSize: 10 * 1024 * 1024, // 2 MB (in bytes)
     files: 3, // Maximum 5 files
   },
 });
@@ -50,7 +50,7 @@ const uploadCustomer = multer({
   storage: multerConfigcustomer,
   // Limits configuration to restrict file size and number of files
   limits: {
-    fileSize: 2 * 1024 * 1024, // 2 MB (in bytes)
+    fileSize: 10 * 1024 * 1024, // 2 MB (in bytes)
     files: 6, // Maximum 5 files
   },
 });
@@ -87,7 +87,7 @@ router.post(
     // Upload files to S3.
     console.log(req.files, "check");
     const uploadPromises = req.files.map((file) => {
-      console.log(Gopon_Key, BUCKET_NAME, "d14");
+      console.log(SECRET, BUCKET_NAME, "d14");
       console.log(file.fieldname);
       if (file.fieldname == "Photo") {
         const params = {
@@ -171,10 +171,46 @@ router.post(
   Logger.Logres
 );
 
-// router.post(
-//   "/colection-submisson",PermissonCheck.verifyToken,Logger.Logreq,
-//   AgentController.colectionsubmisson,Logger.Logres
-// );
+router.post(
+  "/colection-submisson",
+  uploadAgent.any(),
+  PermissonCheck.verifyToken,
+  Logger.Logreq,
+  (req, res, next) => {
+    console.log("tridib");
+
+    console.log(req.files, "check pic agent sub");
+    const uploadPromises = req.files.map((file) => {
+      console.log(SECRET, BUCKET_NAME, "d14");
+      console.log(file.fieldname);
+      if (file.fieldname == "receiptPic") {
+        const params = {
+          Bucket: BUCKET_NAME,
+          Key: `Staging/Agent/Payment/${req.body.AgentCode}_${Date.now()}.jpg`,
+          Body: file.buffer,
+          ACL: "public-read", // Change the ACL according to your requirement
+        };
+        return s3.upload(params).promise();
+      }
+    });
+
+    // Wait for all uploads to finish
+    Promise.all(uploadPromises)
+      .then((uploadResponses) => {
+        console.log("Files uploaded successfully:", uploadResponses);
+        // Call next middleware or send response
+        req.body.CollPic = uploadResponses[0]?.Location;
+        next();
+      })
+      .catch((err) => {
+        console.error("Error uploading files to S3:", err);
+        // Handle error
+        res.status(500).json({ error: "Error uploading files to S3" });
+      });
+  },
+  AgentController.colectionsubmisson,
+  Logger.Logres
+);
 router.get(
   "/agentcode-list",
   PermissonCheck.verifyToken,
@@ -192,7 +228,7 @@ router.post(
     // Upload files to S3
     console.log(req.files, "check");
     const uploadPromises = req.files.map((file) => {
-      console.log(Gopon_Key, BUCKET_NAME, "d14");
+      console.log(SECRET, BUCKET_NAME, "d14");
       console.log(file.fieldname);
       if (file.fieldname == "NomineePhoto") {
         const params = {
@@ -247,7 +283,7 @@ router.post(
     // Upload files to S3
     console.log(req.files, "check");
     const uploadPromises = req.files.map((file) => {
-      console.log(Gopon_Key, BUCKET_NAME, "d14");
+      console.log(SECRET, BUCKET_NAME, "d14");
       console.log(file.fieldname);
       if (file.fieldname == "NomineePhoto") {
         const params = {
@@ -308,48 +344,6 @@ router.post(
 router.post("/agent-yearly-performance", AgentController.AgentPerformance);
 router.post("/agent-area-coll", AgentController.AreaAgentCollRepo);
 router.post("/due-leads", AgentController.dueleads);
-
-router.post(
-  "/colection-submisson",
-  uploadAgent.any(),
-  PermissonCheck.verifyToken,
-  Logger.Logreq,
-  (req, res, next) => {
-    console.log("tridib");
-
-    console.log(req.files, "check pic agent sub");
-    const uploadPromises = req.files.map((file) => {
-      console.log(Gopon_Key, BUCKET_NAME, "d14");
-      console.log(file.fieldname);
-      if (file.fieldname == "receiptPic") {
-        const params = {
-          Bucket: BUCKET_NAME,
-          Key: `Staging/Agent/Payment/${req.body.AgentCode}_${Date.now()}.jpg`,
-          Body: file.buffer,
-          ACL: "public-read", // Change the ACL according to your requirement
-        };
-        return s3.upload(params).promise();
-      }
-    });
-
-    // Wait for all uploads to finish
-    Promise.all(uploadPromises)
-      .then((uploadResponses) => {
-        console.log("Files uploaded successfully:", uploadResponses);
-        // Call next middleware or send response
-        req.body.CollPic = uploadResponses[0]?.Location;
-        next();
-      })
-      .catch((err) => {
-        console.error("Error uploading files to S3:", err);
-        // Handle error
-        res.status(500).json({ error: "Error uploading files to S3" });
-      });
-  },
-  AgentController.colectionsubmisson,
-  Logger.Logres
-);
-
 router.post(
   "/colection-status",
   PermissonCheck.verifyToken,

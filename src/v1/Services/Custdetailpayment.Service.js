@@ -20,9 +20,9 @@ class Custdetailpayment {
         SchemeRegId = null,
         CompanyCode = null,
         PaymentType = null,
-        LotId=null
+        LotId = null,
       } = req.body;
-     // console.log(req.body, "in show service");
+      // console.log(req.body, "in show service");
       var NotAgentPayment = -1;
       if (
         (req.body.NotAgentPayment !== "" &&
@@ -34,7 +34,7 @@ class Custdetailpayment {
         console.log("in not agen", NotAgentPayment);
         NotAgentPayment = req.body.NotAgentPayment;
       }
-     // console.log("in not agen", NotAgentPayment);
+      // console.log("in not agen", NotAgentPayment);
       var dt1 = null;
       var dt2 = null;
       var time1 = "23:59:59";
@@ -46,36 +46,41 @@ class Custdetailpayment {
         " et.MICR, et.TransactionId, sr.MaturityStatus, sr.BonusStatus, sr.CustomerAccNo, et.NotAgentPayment,Area.AreaName,Bm.BranchName from customermasters " +
         " as cm, schememasters as sm, schemeregisters as sr, emitrans as et,agentmasters as am,usermasters as um,areamasters as Area,branchmasters as Bm  where sr.UUid = cm.UUid and sr.SUUid = sm.SUUid and " +
         " et.SchemeRegId = sr.id and et.CustomerUUid = sr.UUid and cm.AgentCode=am.AgentCode and et.CustomerUUid=um.UUid and et.AreaID=Area.AreaID and um.BranchId=Bm.BranchId ";
-      
-    if (
-      startDate !==null &&
-      startDate !==undefined &&
-      startDate !=="" &&
-      endDate !==null &&
-      endDate !=="" &&
-      endDate !==undefined
-    ) {
-      dt1 = `${startDate} ${time}`;
-      dt2 = `${endDate} ${time1}`;
-      sqlstring = sqlstring + " and et.CollDate between :dt1 and :dt2 ";
-      repobj.dt1 = dt1;
-      repobj.dt2 = dt2;
-    }
-      if (AgentCode !==null && AgentCode !=="" && AgentCode !==undefined && AgentCode !==-1) {
-        console.log("hello",AgentCode);
+
+      if (
+        startDate !== null &&
+        startDate !== undefined &&
+        startDate !== "" &&
+        endDate !== null &&
+        endDate !== "" &&
+        endDate !== undefined
+      ) {
+        dt1 = `${startDate} ${time}`;
+        dt2 = `${endDate} ${time1}`;
+        sqlstring = sqlstring + " and et.CollDate between :dt1 and :dt2 ";
+        repobj.dt1 = dt1;
+        repobj.dt2 = dt2;
+      }
+      if (
+        AgentCode !== null &&
+        AgentCode !== "" &&
+        AgentCode !== undefined &&
+        AgentCode !== -1
+      ) {
+        console.log("hello", AgentCode);
         sqlstring = sqlstring + " and cm.AgentCode=:AgentCode ";
         repobj.AgentCode = AgentCode;
       }
       if (
-        PaymentType !==null &&
-        PaymentType !==undefined &&
-        PaymentType !=="" &&
-        PaymentType !==-1
+        PaymentType !== null &&
+        PaymentType !== undefined &&
+        PaymentType !== "" &&
+        PaymentType !== -1
       ) {
         sqlstring = sqlstring + " and et.PaymentType=:PaymentType ";
         repobj.PaymentType = PaymentType;
       }
-      if (CustomerID !==null && CustomerID !==undefined && CustomerID !="") {
+      if (CustomerID !== null && CustomerID !== undefined && CustomerID != "") {
         sqlstring = sqlstring + " and cm.CustomerID=:CustomerID ";
         repobj.CustomerID = CustomerID;
       }
@@ -89,35 +94,36 @@ class Custdetailpayment {
         repobj.paymentstatus = PaymentStatus;
       }
       if (
-        CollectionId !==null &&
-        CollectionId !==undefined &&
-        CollectionId !=="")
-      {
+        CollectionId !== null &&
+        CollectionId !== undefined &&
+        CollectionId !== ""
+      ) {
         sqlstring = sqlstring + " and et.CollectionId=:CollectionId ";
         repobj.CollectionId = CollectionId;
       }
-        if (LotId !== null && LotId !== undefined && LotId !== "") {
-          sqlstring = sqlstring + " and et.LotId=:LotId ";
-          repobj.LotId = LotId;
-        }
-      if (NotAgentPayment===1) {
+      if (LotId !== null && LotId !== undefined && LotId !== "") {
+        sqlstring = sqlstring + " and et.LotId=:LotId ";
+        repobj.LotId = LotId;
+      }
+      if (NotAgentPayment === 1) {
         sqlstring = sqlstring + " and et.NotAgentPayment IS NOT Null ";
       }
-      if (NotAgentPayment===0) {
+      if (NotAgentPayment === 0) {
         sqlstring = sqlstring + " and et.NotAgentPayment IS Null ";
       }
       if (
-        SchemeRegId !==null &&
-        SchemeRegId !==undefined &&
-        SchemeRegId !=="") {
+        SchemeRegId !== null &&
+        SchemeRegId !== undefined &&
+        SchemeRegId !== ""
+      ) {
         sqlstring = sqlstring + " and sr.Id=:SchemeRegId ";
         repobj.SchemeRegId = SchemeRegId;
       }
       if (
-        req.body.LoggerBranchId !=="" &&
-        req.body.LoggerBranchId !==null &&
-        req.body.LoggerBranchId !==-1 &&
-        req.body.LoggerBranchId !==undefined &&
+        req.body.LoggerBranchId !== "" &&
+        req.body.LoggerBranchId !== null &&
+        req.body.LoggerBranchId !== -1 &&
+        req.body.LoggerBranchId !== undefined &&
         req.body.SuperUserType !== 1
       ) {
         sqlstring = sqlstring + " and um.BranchId=:bid ";
@@ -128,9 +134,9 @@ class Custdetailpayment {
       const myquery = await sq
         .query(sqlstring, { replacements: repobj, type: QueryTypes.SELECT })
         .then(async (rst) => {
-         // console.log(rst, "hei o maro");
-         var arr = [];
-          if (rst.length !==0) {
+          // console.log(rst, "hei o maro");
+          var arr = [];
+          if (rst.length !== 0) {
             rst.map((i) => {
               var ExpectedCollection = 0;
               var Commission = 0;
@@ -138,7 +144,7 @@ class Custdetailpayment {
               var date = moment(i?.SchemeStartDate);
               var finaldate = date.add(i?.duration, "months");
               var numDays = finaldate.diff(date, "days");
-              if (i?.PaymentType===2) {
+              if (i?.PaymentType === 2) {
                 ExpectedCollection = i?.EMI;
                 if (ExpectedCollection > i?.totcolection) {
                   red = 1;
@@ -181,12 +187,10 @@ class Custdetailpayment {
       return myquery;
     } catch (error) {
       console.log(error);
-      return res
-        .status(error?.status || 500)
-        .json({
-          status: "FAILED",
-          response: { error: error?.message || error },
-        });
+      return res.status(error?.status || 500).json({
+        status: "FAILED",
+        response: { error: error?.message || error },
+      });
     }
   }
 
@@ -194,9 +198,9 @@ class Custdetailpayment {
     try {
       var SchemeRegId;
       if (
-        req.body.SchemeRegId !=="" &&
-        req.body.SchemeRegId !==null &&
-        req.body.SchemeRegId !==undefined
+        req.body.SchemeRegId !== "" &&
+        req.body.SchemeRegId !== null &&
+        req.body.SchemeRegId !== undefined
       ) {
         console.log("sch");
         SchemeRegId = req.body.SchemeRegId;
@@ -209,7 +213,7 @@ class Custdetailpayment {
       })
         .then(async (rst) => {
           console.log(rst);
-          if (rst.length !==0) {
+          if (rst.length !== 0) {
             return res.status(200).json({ errmsg: false, response: rst });
           } else {
             return res.status(200).json({
@@ -236,9 +240,9 @@ class Custdetailpayment {
     try {
       var SchemeRegId;
       if (
-        req.body.SchemeRegId !=="" &&
-        req.body.SchemeRegId !==null &&
-        req.body.SchemeRegId !==undefined
+        req.body.SchemeRegId !== "" &&
+        req.body.SchemeRegId !== null &&
+        req.body.SchemeRegId !== undefined
       ) {
         SchemeRegId = req.body.SchemeRegId;
       }
@@ -251,7 +255,7 @@ class Custdetailpayment {
         }
       )
         .then(async (rst) => {
-          if (rst.length !==0) {
+          if (rst.length !== 0) {
             return res.status(200).json({ errmsg: false, response: rst });
           } else {
             return res.status(200).json({

@@ -39,87 +39,78 @@ const SchemeRegisters = sq.define("schemeregisters", {
     allowNull: false,
   },
   MaturityStatus: {
-    type: DataTypes.TINYINT,         // inactive 0 ,matured 3,active 1,premature 2
-    allowNull: false,              
+    type: DataTypes.TINYINT, // inactive 0 ,matured 3,active 1,premature 2
+    allowNull: false,
   },
   BonusStatus: {
     type: DataTypes.TINYINT,
     allowNull: false,
   },
-  AcSerial:
-  {
-    type:DataTypes.STRING,
-    allowNull:false,
+  AcSerial: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   CustomerAccNo: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-EMI:
-{
-  type: DataTypes.FLOAT,
-  allowNull: false,
-},
-frequency:
-{
-  type:DataTypes.STRING,
-  allowNull:false
-},
-BonusComment: {
-  type: DataTypes.STRING,
-  allowNull: true,
-},
-MaturityComment: {
-  type: DataTypes.STRING,
-  allowNull: true,
-},
-RedeemAmt: {
-  type: DataTypes.FLOAT,
- 
-},
-Wallet:{
-  type: DataTypes.FLOAT,
-},
-MatureAmt:{
-  type: DataTypes.FLOAT,
-},
-  PassBookNo:{
-    type:DataTypes.STRING,
+  EMI: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
   },
-  RegfeesTaken:{
-    type:DataTypes.INTEGER,
+  frequency: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  BonusComment: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  MaturityComment: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  RedeemAmt: {
+    type: DataTypes.FLOAT,
+  },
+  Wallet: {
+    type: DataTypes.FLOAT,
+  },
+  MatureAmt: {
+    type: DataTypes.FLOAT,
+  },
+  PassBookNo: {
+    type: DataTypes.STRING,
+  },
+  RegfeesTaken: {
+    type: DataTypes.INTEGER,
   },
   Nomineename: {
     type: DataTypes.STRING,
-    
   },
   NomineeDOB: {
     type: DataTypes.DATEONLY,
-    
   },
   Relation: {
     type: DataTypes.STRING,
-    
   },
   NomineeIdProofType: {
     type: DataTypes.STRING,
-   
   },
   NomineeIdProofNumber: {
     type: DataTypes.STRING,
-    
   },
   NomineeIdProofPhoto: {
     type: DataTypes.STRING,
-    
   },
   NomineePhoto: {
     type: DataTypes.STRING,
-   
   },
   Nomineesignature: {
     type: DataTypes.STRING,
-    
+  },
+  regfees: {
+   type:DataTypes.DOUBLE(10,2) 
   }
 });
 
