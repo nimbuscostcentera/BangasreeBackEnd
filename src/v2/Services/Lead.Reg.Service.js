@@ -38,7 +38,7 @@ class LaedRegService {
         Nomineesignature = null,
         CompanyCode,
         BranchId,
-        FollowUpDate
+        FollowUpDate,
       } = req.body;
       const uuid = uuidv4();
       // const hashPassword = bcrypt.hashSync(password, Pwd);
@@ -63,7 +63,7 @@ class LaedRegService {
                 }).then((rst) => {
                   if (rst.length === 0) {
                     console.log("in laed reg");
-                    // console.log(result1[0].DurationType)                  // console.log(StartDate,EndDate,"Scheme date");
+                    // //console.log(result1[0].DurationType)                  // console.log(StartDate,EndDate,"Scheme date");
                     ProabableCustomers.create({
                       UUid: uuid,
                       CompanyCode: CompanyCode,
@@ -93,8 +93,8 @@ class LaedRegService {
                       NomineePhoto: NomineePhoto,
                       Nomineesignature: Nomineesignature,
                       Customersignature: Customersignature,
-                      BranchId:BranchId,
-                      FollowUpDate:FollowUpDate,
+                      BranchId: BranchId,
+                      FollowUpDate: FollowUpDate,
                       Status: 3,
                     })
                       .then(() => {
@@ -119,7 +119,7 @@ class LaedRegService {
                   }
                 });
               } else {
-                console.log(result.length);
+                //console.log(result.length);
                 return res
                   .status(400)
                   .json({ errMsg: true, response: "Already  Registered User" });

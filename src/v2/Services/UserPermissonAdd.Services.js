@@ -7,25 +7,22 @@ const { QueryTypes } = require("sequelize");
 const { response } = require("express");
 class UserPermissonAdd {
   async UserPermissonAdd(req, res, next) {
-    try
-    {
+    try {
       console.log(req.body?.UUid, "Start");
-      const {Utype,CompanyCode,UUid,data} = req.body;
+      const { Utype, CompanyCode, UUid, data } = req.body;
       var objreq = data;
       var i = 0;
-      var flag =0;
+      var flag = 0;
       var length1 = objreq.length;
       //  console.log(objreq);
-      var  usersw = await sq.sync().then(async () => {
+      var usersw = await sq.sync().then(async () => {
         UserMasters.findAll({
           where: {
             CompanyCode: CompanyCode,
           },
         }).then(async (res1) => {
-          if (res1.length != 0)
-          {
-            for (i = 0; i < length1; i++)
-            {
+          if (res1.length != 0) {
+            for (i = 0; i < length1; i++) {
               var newobj = objreq[i];
               console.log(newobj, "req list");
               await UserPermissions.findAll({
@@ -34,12 +31,12 @@ class UserPermissonAdd {
                   PageId: newobj?.PageId,
                 },
               }).then(async (res3) => {
-                console.log(newobj?.PageId,"new");
-                console.log(res3.length);
+                console.log(newobj?.PageId, "new");
+                //console.log(res3.length);
 
-                console.log(res3,i)
+                //console.log(res3,i)
                 if (res3.length == 0) {
-                  console.log("ho",)
+                  console.log("ho");
                   // console.log(newobj?.ViewPage, newobj?.PageId,newobj?.usertype);
                   //  UserPermissions.create({
                   //   UUid: UUid,
@@ -78,11 +75,10 @@ class UserPermissonAdd {
                           CompanyCode: CompanyCode,
                           UUid: UUid,
                           PageId: newobj?.PageId,
-                          View: newobj?.ViewPage||0,
-                          Add: newobj?.Create||0,
-                          Edit: newobj?.Edit||0,
-                          Del: newobj?.Delete||0,
-                         
+                          View: newobj?.ViewPage || 0,
+                          Add: newobj?.Create || 0,
+                          Edit: newobj?.Edit || 0,
+                          Del: newobj?.Delete || 0,
                         },
                         type: QueryTypes.INSERT,
                       }
@@ -109,13 +105,13 @@ class UserPermissonAdd {
                     }, // Set the field and its new value
                     {
                       where: {
-                        UUid:UUid,
+                        UUid: UUid,
                         PageId: newobj?.PageId,
                       },
                     }
-                  ).then((RegRes1) => {
-                    console.log(RegRes1,"hello");
-                   
+                  )
+                    .then((RegRes1) => {
+                      console.log(RegRes1, "hello");
                     })
                     .catch((err) => {
                       console.log(err);
@@ -123,19 +119,23 @@ class UserPermissonAdd {
                     });
                 }
               });
-            }  
+            }
             // console.log(flag);
             if (flag === 1) {
-              console.log(" not ok permission")
-              return res.status(500).json({errmsg:true,response:"Permission Assigned Failed"})
-            }
-            else {
+              console.log(" not ok permission");
+              return res
+                .status(500)
+                .json({ errmsg: true, response: "Permission Assigned Failed" });
+            } else {
               console.log("ok permission");
-               return res.status(200).json({ errmsg: false ,response:"Permission Updated successfully"});
+              return res
+                .status(200)
+                .json({
+                  errmsg: false,
+                  response: "Permission Updated successfully",
+                });
             }
-          }
-          else
-          {
+          } else {
             return res.status(200).json({
               status: 500,
               errmsg: true,
@@ -145,10 +145,8 @@ class UserPermissonAdd {
         });
       });
       return usersw;
-    }
-    catch (error)
-    {
-    //  console.log(error)
+    } catch (error) {
+      //  console.log(error)
     }
   }
 }

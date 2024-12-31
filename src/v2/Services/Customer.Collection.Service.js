@@ -109,7 +109,7 @@ class CustomerCollectionService {
                   .then(async (resultCust) => {
                     if(PaymentType==2)
                     {
-                    console.log(Result[0].dataValues.EMI, "emi", Result[0]);
+                    //console.log(result[0].dataValues.EMI, "emi", Result[0]);
                     var emi = Result[0].dataValues.EMI;
                     var frequency = Result[0].dataValues.frequency;
                     var date = new Date();
@@ -377,7 +377,7 @@ class CustomerCollectionService {
                 .then(async (resultCust) => {
                   if(PaymentType==2)
                   {
-                  console.log(Result[0].dataValues.EMI, "emi", Result[0]);
+                  //console.log(result[0].dataValues.EMI, "emi", Result[0]);
                   var emi = Result[0].dataValues.EMI;
                   var frequency = Result[0].dataValues.frequency;
                   var date = new Date();

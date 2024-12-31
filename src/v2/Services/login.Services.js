@@ -7,8 +7,8 @@ const { QueryTypes } = require("sequelize");
 const bcrypt = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 const SecreateKey = "kl@#$^&%$@%!$#qwhepiu`ypidunsxjibsxjg63244543654654qww";
-const http = require('http');
-const crypto = require('crypto');
+const http = require("http");
+const crypto = require("crypto");
 const Pwd = bcrypt.genSaltSync(10);
 class LoginService {
   async getlogin(req, res, next) {
@@ -37,14 +37,14 @@ class LoginService {
             { replacements: { uniqueId: uniqueId }, type: QueryTypes.SELECT }
           )
             .then(async (result) => {
-              console.log(result[0]);
+              //console.log(result[0]);
               if (result.length === 0) {
                 console.log("invalid user");
                 return res
                   .status(401)
                   .json({ errMsg: true, response: "invalid user" });
               } else {
-                console.log(result[0].Password);
+                //console.log(result[0].Password);
                 const checkPassword = bcrypt.compareSync(
                   Pass,
                   result[0].Password
@@ -65,7 +65,10 @@ class LoginService {
                     // })
                     sq.query(
                       "SELECT sm.*,d.Designation FROM superusermasters as sm,designations as d WHERE d.Did=sm.DID and  sm.UUid=:UUid and sm.Status=1",
-                      { replacements: { UUid: result[0].UUid }, type: QueryTypes.SELECT }
+                      {
+                        replacements: { UUid: result[0].UUid },
+                        type: QueryTypes.SELECT,
+                      }
                     )
                       .then(async (superuserResp) => {
                         console.log(superuserResp);
@@ -73,7 +76,7 @@ class LoginService {
                           const accessToken = JWT.sign(
                             { suid: result[0].UUid },
                             SecreateKey,
-                            { 
+                            {
                               expiresIn: "1h",
                             }
                           );
@@ -95,8 +98,13 @@ class LoginService {
                           obj4 = { AccessToken: accessToken };
                           obj5 = { refreshToken: refreshToken };
 
-                          obj3 = { ...superuserResp[0], ...obj2, ...obj4, ...obj5 };
-                          console.log(obj3,"TEST");
+                          obj3 = {
+                            ...superuserResp[0],
+                            ...obj2,
+                            ...obj4,
+                            ...obj5,
+                          };
+                          console.log(obj3, "TEST");
                           return res.status(200).json({
                             errMsg: false,
                             response: "SuperUser Successfully login",
@@ -135,7 +143,7 @@ class LoginService {
                                 obj4 = { AccessToken: accessToken };
                                 obj5 = { refreshToken: refreshToken };
                                 obj3 = { ...obj1, ...obj2, ...obj4, ...obj5 };
-                                console.log(obj3,"TEST");
+                                console.log(obj3, "TEST");
                                 return res.status(200).json({
                                   errMsg: false,
                                   response: "Agent Successfully login",
@@ -185,12 +193,10 @@ class LoginService {
                                         details: obj3,
                                       });
                                     } else {
-                                      return res
-                                        .status(401)
-                                        .json({
-                                          errMsg: "false",
-                                          response: "No Active User",
-                                        });
+                                      return res.status(401).json({
+                                        errMsg: "false",
+                                        response: "No Active User",
+                                      });
                                     }
                                   })
                                   .catch((err) => {
@@ -225,27 +231,31 @@ class LoginService {
   }
   async ForgetPass(req, res, next) {
     function generateRandomPassword(length) {
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+{}|:<>?';
-      let password = '';
-    
+      const chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+{}|:<>?";
+      let password = "";
+
       for (let i = 0; i < length; i++) {
         const randomIndex = crypto.randomInt(0, chars.length);
         password += chars[randomIndex];
       }
-    
+
       return password;
     }
     try {
       var obj1, obj2, obj3, obj4, obj5, obj6;
       // const uniqueId = req.body.uniqueId;
-      const PhoneNo= req.body.PhoneNo;
+      const PhoneNo = req.body.PhoneNo;
       var name;
-      var password
+      var password;
       console.log(req.body);
-      if (!PhoneNo ) {
+      if (!PhoneNo) {
         return res
           .status(400)
-          .json({ errMsg: true, response: "You Have To Enter Phone Number First!!!" });
+          .json({
+            errMsg: true,
+            response: "You Have To Enter Phone Number First!!!",
+          });
       } else {
         const Loginsecure = await sq.sync().then(async () => {
           sq.query(
@@ -253,7 +263,7 @@ class LoginService {
             { replacements: { PhoneNo: PhoneNo }, type: QueryTypes.SELECT }
           )
             .then(async (result) => {
-              console.log(result[0]);
+              //console.log(result[0]);
               if (result.length === 0) {
                 console.log("invalid user");
                 return res
@@ -261,70 +271,86 @@ class LoginService {
                   .json({ errMsg: true, response: "No Such User!!!" });
               } else {
                 const length = 7; // Length of the password
-                name=result[0].UserName
+                name = result[0].UserName;
                 password = generateRandomPassword(length);
                 console.log(password);
                 const hashPassword = bcrypt.hashSync(password, Pwd);
                 console.log(hashPassword);
                 await sq
-                .query(
-                  `Update usermasters set password=:password where PhoneNumber =:PhoneNo`,
-                  {
-                    replacements: {  PhoneNo: PhoneNo,password:hashPassword },
-                    type: QueryTypes.UPDATE,
-                  }
-                )
-                .then(async (res3) => {
-                  console.log(password);
-                  var url = '';
-                  ////___________________________________SMS Integration_______________________________
+                  .query(
+                    `Update usermasters set password=:password where PhoneNumber =:PhoneNo`,
+                    {
+                      replacements: {
+                        PhoneNo: PhoneNo,
+                        password: hashPassword,
+                      },
+                      type: QueryTypes.UPDATE,
+                    }
+                  )
+                  .then(async (res3) => {
+                    console.log(password);
+                    var url = "";
+                    ////___________________________________SMS Integration_______________________________
 
-                  url=url+'http://trans.pmcbulksms.com/submitsms.jsp?user=BANGASREE&key=80d40e2427XX'
-                  url=url+'&mobile=+91'+PhoneNo+'&message=Hello '+ name +', Your password for Login ID '+ PhoneNo +' has been reset. Your new password is '+ password +' . Please change your password after logging in. In case you have not requested for a new password, please contact 8585023758 and report. Regards, Bangasree Jewellers&senderid=BJSWRN&accusage=1&entityid=1201170685649952029&tempid=1207171266143917568'
-                  console.log(url);
-                  http.get(url, (response) => {
-                    let data = '';
-                  
-                    // A chunk of data has been received.
-                    response.on('data', (chunk) => {
-                      data += chunk;
-                    });
-                    response.on('end', () => {
-                      console.log(data);
-                    });
-                  }).on('error', (error) => {
-                    console.error(`Error: ${error.message}`);
+                    url =
+                      url +
+                      "http://trans.pmcbulksms.com/submitsms.jsp?user=BANGASREE&key=80d40e2427XX";
+                    url =
+                      url +
+                      "&mobile=+91" +
+                      PhoneNo +
+                      "&message=Hello " +
+                      name +
+                      ", Your password for Login ID " +
+                      PhoneNo +
+                      " has been reset. Your new password is " +
+                      password +
+                      " . Please change your password after logging in. In case you have not requested for a new password, please contact 8585023758 and report. Regards, Bangasree Jewellers&senderid=BJSWRN&accusage=1&entityid=1201170685649952029&tempid=1207171266143917568";
+                    console.log(url);
+                    http
+                      .get(url, (response) => {
+                        let data = "";
+
+                        // A chunk of data has been received.
+                        response.on("data", (chunk) => {
+                          data += chunk;
+                        });
+                        response.on("end", () => {
+                          console.log(data);
+                        });
+                      })
+                      .on("error", (error) => {
+                        console.error(`Error: ${error.message}`);
+                      });
+                    //__________________________________________________________________________________________________________
+                    return res
+                      .status(200)
+                      .json({
+                        errmsg: false,
+                        response:
+                          "Please Check Your Registred Phone Number For New PassWord!!!",
+                      });
                   });
-                  //__________________________________________________________________________________________________________
-                  return res
-                    .status(200)
-                    .json({ errmsg: false, response: "Please Check Your Registred Phone Number For New PassWord!!!" });
-                })  
-                
               }
             })
             .catch((err) => {
               console.log(err);
             });
-
         });
         return Loginsecure;
-        
       }
     } catch (error) {
       console.log(error);
       return res
         .status(error?.status || 500)
         .json({ status: "FAILED", data: { error: error?.response || error } });
-        
     }
-    
   }
   async ResetPass(req, res, next) {
     try {
       var obj1, obj2, obj3, obj4, obj5, obj6;
       // const uniqueId = req.body.uniqueId;
-      const PhoneNo= req.body.PhoneNo;
+      const PhoneNo = req.body.PhoneNo;
       const Pass = req.body.password;
       const NewPass = req.body.Newpassword;
       console.log(req.body);
@@ -348,14 +374,14 @@ class LoginService {
             { replacements: { PhoneNo: PhoneNo }, type: QueryTypes.SELECT }
           )
             .then(async (result) => {
-              console.log(result[0]);
+              //console.log(result[0]);
               if (result.length === 0) {
                 console.log("invalid user");
                 return res
                   .status(401)
                   .json({ errMsg: true, response: "invalid user" });
               } else {
-                console.log(result[0].Password);
+                //console.log(result[0].Password);
                 const checkPassword = bcrypt.compareSync(
                   Pass,
                   result[0].Password
@@ -369,19 +395,24 @@ class LoginService {
                 } else {
                   const hashPassword = bcrypt.hashSync(NewPass, Pwd);
                   await sq
-                .query(
-                  `Update usermasters set password=:password where PhoneNumber =:PhoneNo`,
-                  {
-                    replacements: {  PhoneNo: PhoneNo,password:hashPassword },
-                    type: QueryTypes.UPDATE,
-                  }
-                )
-                .then(async (res3) => {
-                  return res
-                  .status(200)
-                  .json({ errmsg: false, response: "Password Reset Successfully!!!" });
-
-                })
+                    .query(
+                      `Update usermasters set password=:password where PhoneNumber =:PhoneNo`,
+                      {
+                        replacements: {
+                          PhoneNo: PhoneNo,
+                          password: hashPassword,
+                        },
+                        type: QueryTypes.UPDATE,
+                      }
+                    )
+                    .then(async (res3) => {
+                      return res
+                        .status(200)
+                        .json({
+                          errmsg: false,
+                          response: "Password Reset Successfully!!!",
+                        });
+                    });
                 }
               }
             })

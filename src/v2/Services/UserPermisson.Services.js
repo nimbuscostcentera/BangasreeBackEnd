@@ -8,8 +8,8 @@ class UserPermissonService {
   async UserPermisson(req, res, next) {
     try {
       var PermissionShow;
-      console.log(req.body,"permisson");
-      const { CompanyCode, Utype, LoggerUUid,UUid } = req.body;
+      console.log(req.body, "permisson");
+      const { CompanyCode, Utype, LoggerUUid, UUid } = req.body;
       if (
         CompanyCode != "" &&
         CompanyCode != null &&
@@ -35,7 +35,6 @@ class UserPermissonService {
                 },
               })
                 .then(async (resp) => {
-                 
                   if (resp.length === 0) {
                     console.log("1");
                     respPerUser = await sq
@@ -50,7 +49,7 @@ class UserPermissonService {
                         }
                       )
                       .then(async (resp2) => {
-                      console.log(resp2,"rest");
+                        //console.log(resp2,"rest");
                         return res
                           .status(200)
                           .json({ errmsg: false, response: resp2 });
@@ -72,7 +71,7 @@ class UserPermissonService {
                         }
                       )
                       .then(async (resp2) => {
-                        console.log(resp2,"rest");
+                        //console.log(resp2,"rest");
                         return res
                           .status(200)
                           .json({ errmsg: false, response: resp2 });
@@ -88,13 +87,11 @@ class UserPermissonService {
                   //   .json({ status: "FAILED", response: err });
                 });
             } else {
-              return res
-                .status(200)
-                .json({
-                  status: 500,
-                  errmsg: true,
-                  response: "UnAuthorized Request!!",
-                });
+              return res.status(200).json({
+                status: 500,
+                errmsg: true,
+                response: "UnAuthorized Request!!",
+              });
             }
           });
         });

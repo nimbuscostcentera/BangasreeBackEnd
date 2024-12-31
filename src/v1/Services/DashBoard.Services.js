@@ -6,6 +6,7 @@ const { UserPermissions } = require("../Model/UserPermission.Model");
 const { CustomerMasters } = require("../Model/CustomerMaster.Model");
 const { Op } = require("sequelize");
 const { QueryTypes } = require("sequelize");
+const moment = require("moment");
 class DashBoardServices {
   async YearlyReport(req, res, next) {
     try {
@@ -265,7 +266,7 @@ class DashBoardServices {
       var UUid = req.body.UUid;
       var BranchId = req.body.BranchId;
       var SuperUserType = req.body.SuperUserType;
-      var today=req.body.today;
+      var today = moment(req.body.today).format("YYYY-MM-DD");
 
       var promises = [];
       console.log(req.body);
@@ -276,15 +277,22 @@ class DashBoardServices {
           (SELECT COUNT(AgentID) FROM agentmasters WHERE Status=1) AS TotalAgent,
           (SELECT COUNT(Id) FROM schemeregisters WHERE MaturityStatus=3) AS TotalMaturedAcc,
           (SELECT COUNT(SuperUserID) FROM superusermasters WHERE Status=1) AS TotalSuperUser,
-          (SELECT COALESCE(SUM(CollectedAmt), 0) FROM emitrans where CollDate =:today  ) AS TotalCollection`;
+          (SELECT COALESCE(SUM(et.CollectedAmt), 0) FROM emitrans as et where CollDate =:today
+          and et.PaymentType=2 ) AS TotalCollection`;
           qt.today = today;
         } else {
           sql = `SELECT
-          (SELECT COUNT(CM.CustomerID) FROM customermasters AS CM,usermasters AS UM WHERE CM.Status=1 AND UM.UUid=CM.UUid  AND UM.BranchId=:BranchId) AS TotalCust,
-          (SELECT COUNT(AM.AgentID) FROM agentmasters AS AM,usermasters AS UM WHERE AM.Status=1 AND UM.UUid=AM.UUid  AND UM.BranchId=:BranchId) AS TotalAgent,
-          (SELECT COUNT(sr.Id) FROM schemeregisters sr,usermasters AS UM WHERE sr.MaturityStatus=3 AND UM.UUid=sr.UUid  AND UM.BranchId=:BranchId) AS TotalMaturedAcc,
-          (SELECT COUNT(sm.SuperUserID) FROM superusermasters sm,usermasters AS UM WHERE sm.Status=1 AND UM.UUid=sm.UUid  AND UM.BranchId=:BranchId) AS TotalSuperUser,
-          (SELECT COALESCE(SUM(CollectedAmt), 0) FROM emitrans as et,usermasters AS UM WHERE  UM.UUid=et.CustomerUUid  AND UM.BranchId=:BranchId and CollDate =:today ) AS TotalCollection`;
+          (SELECT COUNT(CM.CustomerID) FROM customermasters AS CM,usermasters AS UM WHERE
+          CM.Status=1 AND UM.UUid=CM.UUid  AND UM.BranchId=:BranchId) AS TotalCust,
+          (SELECT COUNT(AM.AgentID) FROM agentmasters AS AM,usermasters AS UM WHERE AM.Status=1
+          AND UM.UUid=AM.UUid  AND UM.BranchId=:BranchId) AS TotalAgent,
+          (SELECT COUNT(sr.Id) FROM schemeregisters sr,usermasters AS UM WHERE sr.MaturityStatus=3
+           AND UM.UUid=sr.UUid  AND UM.BranchId=:BranchId) AS TotalMaturedAcc,
+          (SELECT COUNT(sm.SuperUserID) FROM superusermasters sm,usermasters AS UM WHERE
+           sm.Status=1 AND UM.UUid=sm.UUid  AND UM.BranchId=:BranchId) AS TotalSuperUser,
+          (SELECT COALESCE(SUM(CollectedAmt), 0) FROM emitrans as et,usermasters AS UM WHERE
+           UM.UUid=et.CustomerUUid  AND UM.BranchId=:BranchId and CollDate =:today and
+           et.PaymentType=2) AS TotalCollection`;
           qt.BranchId = BranchId;
           qt.today = today;
         }
@@ -304,8 +312,8 @@ class DashBoardServices {
             // Handle error
             console.error(error);
             return res
-              .status(500)
-              .json({ errmsg: true, error: "Internal Server Error" });
+              .status(400)
+              .json({ errmsg: true, response: error.message });
           });
       } else if (Utype == 2) {
         const agentCode = req.body.AgentCode;
@@ -331,8 +339,8 @@ class DashBoardServices {
             // Handle error
             console.error(error);
             return res
-              .status(500)
-              .json({ errmsg: true, error: "Internal Server Error" });
+              .status(400)
+              .json({ errmsg: true, response: error.message });
           });
       } else if (Utype == 3) {
         const CustUUid = req.body.CustUUid;
@@ -357,12 +365,14 @@ class DashBoardServices {
             // Handle error
             console.error(error);
             return res
-              .status(500)
-              .json({ errmsg: true, error: "Internal Server Error" });
+              .status(400)
+              .json({ errmsg: true, response: error.message });
           });
       }
     } catch (error) {
-      return res.status(500).json({ status: "FAILED", response: error });
+      return res
+        .status(400)
+        .json({ status: "FAILED", response: error.message });
     }
   }
   async MaturityReport(req, res, next) {

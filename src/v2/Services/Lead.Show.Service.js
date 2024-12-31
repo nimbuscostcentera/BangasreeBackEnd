@@ -6,7 +6,8 @@ class ShowLeadService {
   async LeadShow(req, res, next) {
     try {
       var obj = {};
-      var sql = "SELECT pc.CustomerID,pc.EmailId,pc.PhoneNumber,pc.CustomerName,pc.Address ,pc.FollowUpDate,pc.SuperUserID,pc.AgentCode,pc.BranchId,pc.Sex,bm.BranchCode,bm.BranchName,arm.AreaName,am.Name as Name,bm.BranchCode,bm.BranchName FROM proabablecustomers as pc inner join  branchmasters as bm  on pc.BranchId=bm.BranchId inner join agentmasters as am on pc.AgentCode=am.AgentCode inner join areamasters as arm on arm.AreaID=bm.AreaId";
+      var sql =
+        "SELECT pc.CustomerID,pc.EmailId,pc.PhoneNumber,pc.CustomerName,pc.Address ,pc.FollowUpDate,pc.SuperUserID,pc.AgentCode,pc.BranchId,pc.Sex,bm.BranchCode,bm.BranchName,arm.AreaName,am.Name as Name,bm.BranchCode,bm.BranchName FROM proabablecustomers as pc inner join  branchmasters as bm  on pc.BranchId=bm.BranchId inner join agentmasters as am on pc.AgentCode=am.AgentCode inner join areamasters as arm on arm.AreaID=bm.AreaId";
       var qt = {};
       console.log(req.body, "all");
       var startDate,
@@ -27,7 +28,7 @@ class ShowLeadService {
       ) {
         AgentCode = req.body.AgentCode;
         obj.AgentCode = AgentCode;
-        sql= sql + " and pc.AgentCode =:AgentCode"
+        sql = sql + " and pc.AgentCode =:AgentCode";
       }
       if (
         req.body.PhoneNumber != null &&
@@ -58,7 +59,7 @@ class ShowLeadService {
         startDateObj = `${startDate} ${time}`;
         endDateObj = new Date(`${endDate} ${time}`);
         console.log("Sd1:", startDateObj, "\n", "Ed1:", endDateObj);
-        sql=sql+" and pc.createdAt between :sd and :ed "
+        sql = sql + " and pc.createdAt between :sd and :ed ";
         qt.sd = startDateObj;
         qt.ed = endDateObj;
         obj.createdAt = { [Op.between]: [startDateObj, endDateObj] };
@@ -71,31 +72,28 @@ class ShowLeadService {
       ) {
         LeadID = req.body.LeadId;
         obj.CustomerID = LeadID;
-        sql= sql + " and pc.CustomerID =:CustomerID"
+        sql = sql + " and pc.CustomerID =:CustomerID";
         qt.CustomerID = LeadID;
-       
       }
 
-console.log(AgentCode);
-        await sq
-          .query(sql, { replacements: obj, type:QueryTypes.SELECT })
-          .then(async (res2) => {
-            // console.log(rse2,"customer data");
-            if (res2.length != 0) {
-              console.log(res2);
-              res.status(200).json({ errmsg: false, response: res2 });
-            } else {
-              res
-                .status(200)
-                .json({ errmsg: true, msg: "No record Found", response: [] });
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        // const users =  AgentMasters.findAll();
-     
-  
+      console.log(AgentCode);
+      await sq
+        .query(sql, { replacements: obj, type: QueryTypes.SELECT })
+        .then(async (res2) => {
+          // console.log(rse2,"customer data");
+          if (res2.length != 0) {
+            //console.log(res2);
+            res.status(200).json({ errmsg: false, response: res2 });
+          } else {
+            res
+              .status(200)
+              .json({ errmsg: true, msg: "No record Found", response: [] });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      // const users =  AgentMasters.findAll();
     } catch (error) {
       return res.status(500).json({ status: "FAILED", data: error });
     }

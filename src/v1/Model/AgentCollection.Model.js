@@ -71,7 +71,7 @@ const EmiTrans = sq.define("emitrans", {
   PaymentType: {
     type: DataTypes.TINYINT, // 1:regfess 2:Emi
   },
-  NotAgentPayment:{
+  NotAgentPayment: {
     type: DataTypes.INTEGER,
   },
   AreaID: {
@@ -81,6 +81,17 @@ const EmiTrans = sq.define("emitrans", {
       model: "areamasters",
       key: "AreaID",
     },
+  },
+  LotId: {
+    type: DataTypes.BIGINT,
+    references: {
+      model: "lotcollections",
+      key: "LotId",
+    },
+  },
+  gold_rate: {
+    type: DataTypes.DOUBLE(10, 2),
+    allowNull: true,
   },
 });
 sq.sync().then(() => {

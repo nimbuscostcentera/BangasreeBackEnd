@@ -39,7 +39,7 @@ class PagePermissionShowByUser {
                     }
                   )
                   .then(async (resp2) => {
-                    console.log(resp2);
+                    //console.log(resp2);
                     return res
                       .status(200)
                       .json({ errmsg: false, response: resp2 });

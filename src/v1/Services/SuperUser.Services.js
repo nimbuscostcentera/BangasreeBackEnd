@@ -287,7 +287,7 @@ class SuperUserServices {
     try {
       console.log(req.body, "hello sweety");
       var usersw;
-      const { CompanyCode } = req.body;
+      const { CompanyCode = "BJPL" } = req.body;
       let date = new Date();
       usersw = await sq.sync().then(async () => {
         await Goldrates.findAll({
@@ -304,6 +304,10 @@ class SuperUserServices {
             "CURRDATE",
             [sq.col("puritymaster.PURITY"), "PURITY"], // Add PURITY to the parent object
           ],
+          where: {
+            CompanyCode,
+          },
+          order: [["CURRDATE", "DESC"]],
         })
           .then(async (res2) => {
             console.log(res2);

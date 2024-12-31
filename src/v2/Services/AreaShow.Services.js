@@ -8,7 +8,7 @@ class ShowAreaService {
       console.log("I am in area Show Service", req.body);
       let qt = {};
       var sql =
-        "select AreaID,AreaName,Pincode,District,State,Status,country from areamasters"; 
+        "select AreaID,AreaName,Pincode,District,State,Status,country from areamasters";
       if (
         req.body.Status !== "" &&
         req.body.Status !== null &&
@@ -28,7 +28,7 @@ class ShowAreaService {
         })
         .then(async (res2) => {
           if (res2.length != 0) {
-            console.log(res2);
+            //console.log(res2);
             res.status(200).json({ errmsg: false, response: res2 });
           } else {
             res.status(200).json({

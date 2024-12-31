@@ -40,12 +40,17 @@ class Custdetailpayment {
       var time1 = "23:59:59";
       var time = "00:00:00";
       var repobj = {};
-      var sqlstring =
-        "SELECT et.PaymentType ,et.CollectionId,et.CustomerUUid,et.CollectionUUId,cm.CustomerName,cm.UUid as CustUUid,sm.SchemeTitle,sm.Duration,sm.Regfees,sm.createdAt as SchemeStartDate,sr.frequency,et.CollectedAmt " +
-        " as totcolection, et.CollDate, sr.SUUid, sr.StartDate, sr.EMI, cm.AgentCode,am.Commision as Commission, et.PaymentMode, et.PaymentStatus,sr.ID, " +
-        " et.MICR, et.TransactionId, sr.MaturityStatus, sr.BonusStatus, sr.CustomerAccNo, et.NotAgentPayment,Area.AreaName,Bm.BranchName from customermasters " +
-        " as cm, schememasters as sm, schemeregisters as sr, emitrans as et,agentmasters as am,usermasters as um,areamasters as Area,branchmasters as Bm  where sr.UUid = cm.UUid and sr.SUUid = sm.SUUid and " +
-        " et.SchemeRegId = sr.id and et.CustomerUUid = sr.UUid and cm.AgentCode=am.AgentCode and et.CustomerUUid=um.UUid and et.AreaID=Area.AreaID and um.BranchId=Bm.BranchId ";
+      var sqlstring = `SELECT et.PaymentType ,et.CollectionId,et.CustomerUUid,et.CollectionUUId,
+      cm.CustomerName,cm.UUid as CustUUid, sm.SchemeTitle, sm.Duration, sm.Regfees, sm.createdAt
+      as SchemeStartDate, sr.frequency, et.CollectedAmt as totcolection, et.CollDate, sr.SUUid,
+      sr.StartDate, sr.EMI, cm.AgentCode,am.Commision as Commission, et.PaymentMode,
+      et.PaymentStatus,sr.ID,et.MICR, et.TransactionId, sr.MaturityStatus, sr.BonusStatus,
+      sr.CustomerAccNo, et.NotAgentPayment,Area.AreaName,Bm.BranchName,et.gold_rate,cm.Address,
+      cm.PhoneNumber from customermasters as cm, schememasters as sm, schemeregisters as sr,
+      emitrans as et,agentmasters as am,usermasters as um,areamasters as Area,branchmasters as Bm
+      where sr.UUid = cm.UUid and sr.SUUid = sm.SUUid and et.SchemeRegId = sr.id and
+      et.CustomerUUid = sr.UUid and cm.AgentCode=am.AgentCode and et.CustomerUUid=um.UUid and
+      et.AreaID=Area.AreaID and um.BranchId=Bm.BranchId `;
 
       if (
         startDate !== null &&

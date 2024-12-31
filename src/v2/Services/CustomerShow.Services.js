@@ -63,11 +63,12 @@ class ShowCustService {
         obj.endDateObj = endDateObj;
       }
       sql = sql + " order by c.createdAt desc";
-     // console.log(obj);
-   //   console.log(sql, "amar sql");
-      const a=await sq.query(sql, { replacements: obj, type: QueryTypes.SELECT })
-        .then(async(Result) => {
-         // console.log(Result,"amar cust detail");
+      // console.log(obj);
+      //   console.log(sql, "amar sql");
+      const a = await sq
+        .query(sql, { replacements: obj, type: QueryTypes.SELECT })
+        .then(async (Result) => {
+          // //console.log(result,"amar cust detail");
           if (Result.length != 0) {
             return res.status(200).json({ errmsg: false, response: Result });
           } else {
@@ -81,7 +82,7 @@ class ShowCustService {
         .catch((err) => {
           console.log(err);
         });
-       return a;
+      return a;
     } catch (error) {
       return res
         .status(error?.status || 500)

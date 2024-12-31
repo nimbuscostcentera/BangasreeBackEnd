@@ -12,7 +12,7 @@ const { HOST, dbUSER, DB, PASSWORD, POOL } = require("./db.config");
 //     idle: 10000,
 //   },
 // });
-const sequelize = new Sequelize("bangasree", "root", "", {
+const sequelize = new Sequelize("bangasreetest", "root", "", {
   host: "localhost",
   dialect: "mysql",
   port: 3306,

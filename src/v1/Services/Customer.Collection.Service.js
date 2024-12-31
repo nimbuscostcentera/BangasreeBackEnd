@@ -27,7 +27,7 @@ class CustomerCollectionService {
       var PhoneNumber
       var areaid;
       var tot=0
-      const { CustUUid, ID, CollectedAmt, PaymentMode, CompanyCode,PaymentType,Utype } =
+      const { CustUUid, ID, CollectedAmt, PaymentMode, CompanyCode,PaymentType,Utype,gold_rate } =
         req.body;
         var UUid=req.body.UUid;
         if (req.body.CollectionDate != '' && req.body.CollectionDate != null && req.body.CollectionDate != "undefined"  )
@@ -111,7 +111,8 @@ class CustomerCollectionService {
                   PaymentStatus: 2,
                   CompanyCode: CompanyCode,
                   NotAgentPayment:1,
-                  AreaID:areaid
+                  AreaID:areaid,
+                  gold_rate: gold_rate
                 })
                   .then(async (resultCust) => {
                     if(PaymentType==2)

@@ -36,7 +36,7 @@ try{
    
 
     // Select the first sheet
-    var sheetName = workbook.SheetNames[2];
+    var sheetName = workbook.SheetNames[1];
     var sheet = workbook.Sheets[sheetName];
 
     // Convert the sheet to JSON object
@@ -478,11 +478,17 @@ length=data.length;
       for(i=0;i<length;i++)
       {
           var AreaName=data[i].AreaName;
-          var PinCode=data[i].Pincode;
-          var District=data[i].District
-          var State =data[i].state;
-          var Country=data[i].country;
-          var CompanyCode=data[i].CompanyCode;
+          // var PinCode=data[i].Pincode;
+          // var District=data[i].District
+          // var State =data[i].state;
+          // var Country=data[i].country;
+          // var CompanyCode=data[i].CompanyCode;
+
+          var PinCode='700150';
+          var District='South 24 Parganas'
+          var State ='West Bengal'
+          var Country='India';
+          var CompanyCode='BJPL';          
 
       console.log(data[i].state,data[i].country);
           AreaMasters.create({
@@ -616,7 +622,7 @@ length=data.length;
             var Nomineesignature = data[i].CustomerPhoneno + ".jpg";
             // var objreq = data;
    
-            console.log(StartDate,EndDate,i,"SCHEME REGISTER TEST");
+            console.log(StartDate,EndDate,i,SchemeTitle,"SCHEME REGISTER TEST");
             const Colluuid = uuidv4();
                   const Scheme = await SchemeMasters.findOne({
                           attributes: ["SUUid"],
@@ -711,7 +717,7 @@ length=data.length;
             const parsedDate = moment(actualmnth, "MM-YYYY");
 
 // Add a day to the parsed date and change the year
-            const convertedDate = '05-31-2024'
+            const convertedDate = '09-05-2024'
             console.log(convertedDate,"test1");
            const sr= await SchemeRegisters.findOne({
             attributes: ["UUid","ID","SUUid"],

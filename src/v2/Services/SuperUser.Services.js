@@ -9,9 +9,9 @@ class SuperUserServices {
     try {
       var obj = {};
       var obj1 = {};
-      var startdate="";
-      var enddate="";
-      var SuperUserID="";
+      var startdate = "";
+      var enddate = "";
+      var SuperUserID = "";
       var BranchCode;
       var status = null;
       var btn = "between";
@@ -20,9 +20,9 @@ class SuperUserServices {
       var time = "23:59:59";
       var time1 = "00:00:00";
       var sql = "";
- 
+
       var qt;
-      console.log(req.body,"check");
+      console.log(req.body, "check");
       if (
         req.body.SuperUserID !== null &&
         req.body.SuperUserID !== "" &&
@@ -74,7 +74,8 @@ class SuperUserServices {
       if (
         (req.body.Status !== null &&
           req.body.Status !== "" &&
-          req.body.Status !== undefined && req.body.Status !== -1 )  ||
+          req.body.Status !== undefined &&
+          req.body.Status !== -1) ||
         req.body.Status === 0
       ) {
         console.log(status, "ststus");
@@ -84,13 +85,13 @@ class SuperUserServices {
       if (startdate !== "" && enddate !== "") {
         sql = sql + " and  s.createdAt between :startDateObj and :endDateObj";
       }
-      if (SuperUserID !== "" ) {
+      if (SuperUserID !== "") {
         sql = sql + " and  s.SuperUserID =:SuperUserID";
-
       }
       sql = sql + " order by s.createdAt DESC";
       if (
-        (status !== "" || status === 0 ) && status !== null  &&
+        (status !== "" || status === 0) &&
+        status !== null &&
         startDateObj == "" &&
         endDateObj === ""
       ) {
@@ -129,19 +130,19 @@ class SuperUserServices {
           type: QueryTypes.SELECT,
         };
       }
-console.log(sql, qt,"check1");
+      console.log(sql, qt, "check1");
       await sq.sync().then(async () => {
         // if(obj1.length==0)
         // {
         await sq
           .query(sql, qt)
           .then((result) => {
-            console.log(result.length);
+            //console.log(result.length);
             if (result.length != 0) {
-              console.log(result);
+              //console.log(result);
               return res.status(200).json({ errMsg: false, response: result });
             } else {
-              console.log(result);
+              //console.log(result);
               return res.status(204).json({ errMsg: false, response: result });
             }
           })
@@ -184,7 +185,7 @@ console.log(sql, qt,"check1");
             },
           }).then(async (res2) => {
             if (res2.length != 0) {
-              console.log(res2);
+              //console.log(res2);
               return res.status(200).json({ errmsg: false, response: res2 });
             } else {
               return res.status(200).json({

@@ -7,63 +7,53 @@ const { Op } = require("sequelize");
 class DopdownSchemeService {
   async DropDownScheme(req, res, next) {
     try {
-      var obj = {};
-      console.log(req.body, "uff in drow down");
-      const { CustUUid,ID } = req.body;
+      const { CustUUid, ID, Status } = req.body;
+      var qt = {};
+      var sql = `SELECT SM.SCHEMETITLE,SR.EMI,SR.frequency,SR.CustomerAccNo,SR.ID,SM.Regfees,SM.Duration,SM.BONUS,
+          SR.PassBookNo, SR.Nomineename, SR.NomineeDOB, SR.Relation, SR.NomineeIdProofType,SR.NomineeIdProofNumber, 
+          SR.NomineeIdProofPhoto, SR.NomineePhoto, SR.Nomineesignature,SR.NomineePhone FROM schemeregisters AS SR
+          INNER JOIN schememasters AS SM ON SM.SUUid = SR.SUUid WHERE SR.MaturityStatus = 1`;
 
-      const Custsw = await sq
-        .sync()
-        .then(async () => {
-          console.log(CustUUid,ID,"check");
-          var sql=""
-          var qt={}
-          if (ID=="" || ID == undefined || ID==null)
-          {
-            sql="SELECT SM.SCHEMETITLE,SR.EMI,SR.frequency,SR.CustomerAccNo,SR.ID,SM.Regfees,SM.Duration,SM.BONUS,SR.PassBookNo,SR.Nomineename,SR.NomineeDOB,SR.Relation,SR.NomineeIdProofType,SR.NomineeIdProofNumber,SR.NomineeIdProofPhoto,SR.NomineePhoto,SR.Nomineesignature,SR.NomineePhone FROM schemeregisters AS SR ,schememasters AS SM WHERE SM.SUUid=SR.SUUid and  SM.Status=1 and SR.MaturityStatus = 1  "
-            qt.uuid=CustUUid
-          }
-          else{
-            sql="SELECT SM.SCHEMETITLE,SR.EMI,SR.frequency,SR.CustomerAccNo,SR.ID,SM.Regfees,SM.Duration,SM.BONUS,SR.PassBookNo,SR.Nomineename,SR.NomineeDOB,SR.Relation,SR.NomineeIdProofType,SR.NomineeIdProofNumber,SR.NomineeIdProofPhoto,SR.NomineePhoto,SR.Nomineesignature,SR.NomineePhone FROM schemeregisters AS SR ,schememasters AS SM WHERE SM.SUUid=SR.SUUid and SM.Status=1 and SR.MaturityStatus = 1 and SR.ID=:ID   "
-          //  qt="replacements: { uuid: CustUUid,ID: ID }"
-            qt.uuid=CustUUid
-            qt.ID=ID
-          }
-          sql=sql+"AND SR.UUID=:uuid  "
-          await sq
-            .query(
-              sql,
-              {
-                replacements: qt,
-                type: QueryTypes.SELECT,
-              }
-            )
-            .then(async (res2) => {
-              console.log(res2, "I am result");
-              if (res2.length != 0) {
-                res.status(200).json({ errmsg: false, response: res2 });
-              } else {
-                res.status(200).json({
-                  errmsg: true,
-                  msg: "No record Found",
-                  response: res2,
-                });
-              }
-            })
-            .catch((err) => {
-              console.log(err, "error");
-            });
+      if (ID != "" && ID != undefined && ID != null) {
+        console.log(ID, "find ID");
 
-          // const users =  AgentMasters.findAll();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      return Custsw;
+        sql = sql + " and  SR.ID=:ID";
+        qt.ID = ID;
+      }
+
+      if (CustUUid != "" && CustUUid != null && CustUUid != undefined) {
+        sql = sql + " AND SR.UUID=:uuid  ";
+        qt.uuid = CustUUid;
+      }
+
+      if (
+        Status != "" &&
+        Status != null &&
+        Status != undefined &&
+        Status != -1
+      ) {
+        sql = sql + " and SM.Status=:Status ";
+        qt.Status = Status;
+      }
+      console.log(sql, "sql");
+      var Custsw = await sq.query(sql, {
+        replacements: qt,
+        type: QueryTypes.SELECT,
+      });
+
+      if (Custsw.length != 0) {
+        return res.status(200).json({ errmsg: false, response: Custsw });
+      } else {
+        return res
+          .status(200)
+          .json({ errmsg: true, msg: "No record Found", response: Custsw });
+      }
     } catch (error) {
-      console.log(error);
+      console.log(error,"error");
+
       return res
-        .status(error?.status || 500)
-        .json({ status: "FAILED", data: { error: error?.message || error } });
+        .status(400)
+        .json({ status: "FAILED", response: error?.message });
     }
   }
 }

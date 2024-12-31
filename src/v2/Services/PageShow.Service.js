@@ -18,7 +18,7 @@ class PageShowService {
           }
         )
         .then(async (res2) => {
-          // console.log(res2);
+          // //console.log(res2);
           if (res2.length != 0) {
             return res.status(200).json({ errmsg: false, response: res2 });
           } else {

@@ -18,7 +18,7 @@ class EditBranchService {
       ) {
         ID = req.body.AreaID;
       }
-      console.log(ID,"Area");
+      console.log(ID, "Area");
       BranchMasters.update(
         {
           BranchCode: BranchCode,
@@ -33,18 +33,17 @@ class EditBranchService {
         }
       )
         .then(async (resp) => {
-          console.log(resp,"testbranchedit");
+          //console.log(resp,"testbranchedit");
           return res
             .status(200)
             .json({ errmsg: false, response: "Updated Successfully" });
         })
         .catch((err) => {
-          console.log(err,"error");
+          console.log(err, "error");
           return res
             .status(400)
             .json({ errmsg: true, response: "Update Failed" + err });
         });
-      
     } catch (error) {
       console.log(error);
       return res.status(500).json({ errMsg: true, response: error });

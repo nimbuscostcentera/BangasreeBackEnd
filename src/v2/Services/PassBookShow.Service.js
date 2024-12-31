@@ -18,7 +18,7 @@ class PassBookShowService {
         },
       })
         .then(async (res2) => {
-          console.log(res2, "customer data");
+          //console.log(res2, "customer data");
           if (res2.length != 0) {
             res.status(200).json({ errmsg: false, response: res2 });
           } else {
@@ -73,7 +73,7 @@ class PassBookShowService {
         };
       }
       await sq.query(sql, qt).then(async (res2) => {
-        console.log(res2, "pb data");
+        //console.log(res2, "pb data");
         if (res2.length != 0) {
           res.status(200).json({ errmsg: false, response: res2 });
         } else {
@@ -138,7 +138,7 @@ class PassBookShowService {
           },
         })
           .then(async (res2) => {
-            console.log(res2, "customer data");
+            //console.log(res2, "customer data");
             if (res2.length != 0) {
               res.status(200).json({ errmsg: false, response: res2 });
             } else {
@@ -178,7 +178,7 @@ class PassBookShowService {
       await PassBookMaster.findAll({
         where: obj,
       }).then(async (res2) => {
-        console.log(res2, "not assigned data");
+        //console.log(res2, "not assigned data");
         if (res2.length != 0) {
           res.status(200).json({ errmsg: false, response: res2 });
         } else {

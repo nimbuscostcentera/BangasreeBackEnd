@@ -30,7 +30,7 @@ class EditAreaService {
             }
           )
             .then(async (resp) => {
-              console.log(resp, "in then");
+              //console.log(resp, "in then");
               if (resp[0] === 0) {
                 return res
                   .status(400)

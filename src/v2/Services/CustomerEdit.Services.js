@@ -45,9 +45,9 @@ class CustomerEditService {
         CustomerID,
         BranchId,
         CustUUid,
-        NomineeDOB
+        NomineeDOB,
       } = req.body;
-console.log(req.body);
+      console.log(req.body);
       const DBConnection = await sq
         .sync()
         .then(async () => {
@@ -82,7 +82,7 @@ console.log(req.body);
               NomineePhoto: NomineePhoto,
               Nomineesignature: Nomineesignature,
               Status: Status,
-              NomineeDOB:NomineeDOB
+              NomineeDOB: NomineeDOB,
             },
             {
               where: {
@@ -91,12 +91,12 @@ console.log(req.body);
             }
           )
             .then(async (resp) => {
-              console.log(resp,"123");
+              //console.log(resp,"123");
               const customer = await UserMasters.update(
                 {
                   BranchId: BranchId,
-                  UserName:CustomerName,
-                  Email:EmailId
+                  UserName: CustomerName,
+                  Email: EmailId,
                 },
                 {
                   where: {

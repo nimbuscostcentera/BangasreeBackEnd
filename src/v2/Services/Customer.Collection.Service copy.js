@@ -43,7 +43,7 @@ class CustomerCollectionService {
                 PaymentStatus: 1,
               })
                 .then(async (resultCust) => {
-                  console.log(resultCust, "I am in Emitrans then");
+                  //console.log(resultCust, "I am in Emitrans then");
                   return res.status(200).json({
                     errMsg: false,
                     response: "Payment Entry Succssfull.",

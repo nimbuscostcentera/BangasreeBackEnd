@@ -82,8 +82,8 @@ const SchemeRegisters = sq.define("schemeregisters", {
   PassBookNo: {
     type: DataTypes.STRING,
   },
-  RegfeesTaken: {
-    type: DataTypes.INTEGER,
+  regfees: {
+    type: DataTypes.DOUBLE(10, 2),
   },
   Nomineename: {
     type: DataTypes.STRING,
@@ -109,9 +109,6 @@ const SchemeRegisters = sq.define("schemeregisters", {
   Nomineesignature: {
     type: DataTypes.STRING,
   },
-  regfees: {
-   type:DataTypes.DOUBLE(10,2) 
-  }
 });
 
 sq.sync().then(() => {

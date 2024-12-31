@@ -59,7 +59,7 @@ class SuperRegService {
         },
       })
         .then((Result) => {
-          //  console.log(Result, "RST1");
+          //  //console.log(result, "RST1");
           if (Result.length != 0) {
             UserMasters.findAll({
               where: {
@@ -67,7 +67,7 @@ class SuperRegService {
               },
             })
               .then(async (result) => {
-                // console.log(result, "RST2");
+                // //console.log(result, "RST2");
                 if (result.length == 0) {
                   UserMasters.findAll({
                     where: {
@@ -93,7 +93,7 @@ class SuperRegService {
                           IDProofNumber: IDProofNumber,
                         })
                           .then(async (RegRes) => {
-                           // console.log("RST3");
+                            // console.log("RST3");
                             console.log("I am in then of usermaster create");
                             UserMasters.create({
                               UUid: uuid,
@@ -186,7 +186,7 @@ class SuperRegService {
               })
               .catch((err) => {
                 msg = msg + err;
-                 console.log(err);
+                console.log(err);
                 // return res.status(500).json({ errMsg: true, response: err });
               });
           } else {
@@ -206,7 +206,7 @@ class SuperRegService {
     });
     if (msg !== "") {
       console.log(msg);
-      
+
       return res.status(401).json({ errmsg: true, response: msg });
     }
     return DBConnection;

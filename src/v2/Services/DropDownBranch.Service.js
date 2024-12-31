@@ -18,15 +18,17 @@ class ShowBranchService {
 
       const Custsw = await sq.sync().then(async () => {
         if (
-          (Status !== "" && Status !== null && Status !== undefined && Status !==-1) ||
+          (Status !== "" &&
+            Status !== null &&
+            Status !== undefined &&
+            Status !== -1) ||
           Status === 0
         ) {
           sql = sql + " and B.Status=:Status";
           replaceobj.Status = Status;
-        } else if (Status == -1)
-        {
+        } else if (Status == -1) {
           sql = sql;
-          }
+        }
 
         if (
           AreaID !== "" &&
@@ -56,7 +58,7 @@ class ShowBranchService {
         await sq
           .query(sql, qt)
           .then(async (res2) => {
-          //  console.log(res2, "branch data");
+            //  //console.log(res2, "branch data");
             if (res2.length != 0) {
               res.status(200).json({ errmsg: false, response: res2 });
             } else {

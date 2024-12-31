@@ -7,18 +7,19 @@ class DopdownDesignationService {
   async DropDownDesignation(req, res, next) {
     try {
       var obj = {};
-      console.log(req.body,"uff");
+      console.log(req.body, "uff");
       const { CustUUid } = req.body;
 
       const Custsw = await sq.sync().then(async () => {
         console.log(CustUUid);
-           designations.findAll({
+        designations
+          .findAll({
             where: {
-                Status:1,
-            }}
-           ) 
+              Status: 1,
+            },
+          })
           .then(async (res2) => {
-            console.log(res2,"I am result");
+            //console.log(res2,"I am result");
             if (res2.length != 0) {
               res.status(200).json({ errmsg: false, response: res2 });
             } else {
@@ -28,13 +29,15 @@ class DopdownDesignationService {
                 response: res2,
               });
             }
-          }).catch((err)=>{console.log(err,"error")});
+          })
+          .catch((err) => {
+            console.log(err, "error");
+          });
 
         // const users =  AgentMasters.findAll();
       });
       return Custsw;
-    } 
-    catch (error) {
+    } catch (error) {
       console.log(error);
       return res
         .status(error?.status || 500)
