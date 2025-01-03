@@ -8,7 +8,7 @@ const { Op } = require("sequelize");
 class CollectionViewService {
   async CustomerCollectionShow(req, res, next) {
     try {
-      console.log(req.body, "in show service");
+      
       var obj = {};
       var date = new Date();
    //   console.log(date);

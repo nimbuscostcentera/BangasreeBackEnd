@@ -34,9 +34,9 @@ class ShowAgntService {
       }
       if (
         req.body.startDate != null &&
-        req.body.startDate !='' &&
+        req.body.startDate != "" &&
         req.body.endDate != null &&
-        req.body.endDate != ''
+        req.body.endDate != ""
       ) {
         startDate = req.body.startDate;
         endDate = req.body.endDate;
@@ -48,36 +48,43 @@ class ShowAgntService {
         qt.endDateObj = endDateObj;
       }
       if (
-        (req.body.LoggerBranchId != "" &&
-          req.body.LoggerBranchId != null &&
-          req.body.LoggerBranchId != -1 &&
-          req.body.LoggerBranchId != undefined) &&
-        req.body.SuperUserType!==1
+        req.body.LoggerBranchId != "" &&
+        req.body.LoggerBranchId != null &&
+        req.body.LoggerBranchId != -1 &&
+        req.body.LoggerBranchId != undefined &&
+        req.body.SuperUserType !== 1
       ) {
         sql = sql + " and br.BranchId=:bid ";
         qt.bid = req.body.LoggerBranchId;
       }
       sql = sql + " order by a.createdAt DESC ";
-console.log(qt,"this is my qt");
-      Agntsw = await sq.sync().then(async () => {
-        console.log("i am in agent list");
-        await sq
-          .query(sql, { replacements: qt, type:QueryTypes.SELECT })
-          .then(async (res2) => {
-            console.log(res2);
-            if (res2.length != 0) {
-              return res.status(200).json({ errmsg: false, response: res2 });
-            } else {
-              return res
-                .status(200)
-                .json({ errmsg: true, response: res2, msg: "No Record Found" });
-            }
-          }).catch((err) => {
-            console.log(err);
-          });
-      }).catch((err) => {
-        console.log(err);
-      })
+      console.log(qt, "this is my qt");
+      Agntsw = await sq
+        .sync()
+        .then(async () => {
+          console.log("i am in agent list");
+          await sq
+            .query(sql, { replacements: qt, type: QueryTypes.SELECT })
+            .then(async (res2) => {
+              if (res2.length != 0) {
+                return res.status(200).json({ errmsg: false, response: res2 });
+              } else {
+                return res
+                  .status(200)
+                  .json({
+                    errmsg: true,
+                    response: res2,
+                    msg: "No Record Found",
+                  });
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
 
       return Agntsw;
     } catch (error) {

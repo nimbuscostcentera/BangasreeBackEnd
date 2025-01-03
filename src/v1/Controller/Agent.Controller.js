@@ -56,7 +56,6 @@ class AgentController {
 
   async updateagent(req, res, next) {
     try {
-      console.log("controller", req.body);
       const UpdateAgentResponse = await AgentEditService.AgentEdit(
         req,
         res,
@@ -72,7 +71,6 @@ class AgentController {
 
   async approveagent(req, res, next) {
     try {
-      console.log("controller", req.body);
       const ApproveAgentResponse = await AgentApproveService.AgentApprove(
         req,
         res,
@@ -97,7 +95,6 @@ class AgentController {
 
   async customercollection(req, res, next) {
     try {
-      // console.log("controller", req.body);
       const CustomerCollectionResponse =
         await CustomerCollectionService.CustomerCollection(req, res, next);
       next();
@@ -110,7 +107,6 @@ class AgentController {
 
   async customercollectionedit(req, res, next) {
     try {
-      // console.log("controller", req.body);
       const CustomerCollectionResponse =
         await CustomerCollectionService.CustomerCollectionEdit(req, res, next);
       next();
@@ -122,7 +118,6 @@ class AgentController {
   }
   async customercollectionlist(req, res, next) {
     try {
-      // console.log("controller", req.body);
       const CustomerCollectionResponse =
         await CollectionShowService.CustomerCollectionShow(req, res, next);
       next();
@@ -135,7 +130,6 @@ class AgentController {
 
   async colectionsubmisson(req, res, next) {
     try {
-      // console.log("controller", req.body);
       const CustomerCollectionResponse =
         await CollectionSubmissonService.CollectionSubmission(req, res, next);
       next();
@@ -148,7 +142,6 @@ class AgentController {
 
   async schemeaddcustomer(req, res, next) {
     try {
-      // console.log("controller", req.body);
       const CustomerCollectionResponse =
         await SchemeAddCustomerService.SchemeAddCustomer(req, res, next);
       next();
@@ -161,7 +154,6 @@ class AgentController {
 
   async schemeeditcustomer(req, res, next) {
     try {
-      // console.log("controller", req.body);
       const CustomerCollectionResponse =
         await SchemeAddCustomerService.SchemeEditCustomer(req, res, next);
       next();
@@ -174,7 +166,6 @@ class AgentController {
 
   async schemedeletecustomer(req, res, next) {
     try {
-      // console.log("controller", req.body);
       const CustomerCollectionResponse =
         await SchemeAddCustomerService.SchemeDeleteCustomer(req, res, next);
       next();
@@ -187,7 +178,6 @@ class AgentController {
 
   async updatelead(req, res, next) {
     try {
-      // console.log("controller", req.body);
       const CustomerCollectionResponse = await LeadEditService.EditLead(
         req,
         res,
@@ -242,7 +232,6 @@ class AgentController {
 
   async colectionstatus(req, res, next) {
     try {
-      // console.log("controller", req.body);
       const CustomerCollectionResponse =
         await CollectionSubmissonService.ColectionStatus(req, res, next);
       next();
@@ -255,7 +244,6 @@ class AgentController {
 
   async agentlotlist(req, res, next) {
     try {
-      // console.log("controller", req.body);
       const CustomerCollectionResponse =
         await CollectionSubmissonService.AgentLotList(req, res, next);
       next();

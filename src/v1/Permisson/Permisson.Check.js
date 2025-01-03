@@ -84,17 +84,12 @@ class Permission {
       try {
         const decoded = JWT.verify(AccessToken.split(" ")[1], SecreateKey);
         req.uuid = decoded.uuid;
-        console.log(decoded, req.body, "piku");
 
         UserMasters.findOne({
           attributes: ["LogOut"],
           where: { UUid: req.body.LoggerUUid || req.body.UUid },
         })
           .then((res15) => {
-            console.log(
-              res15?.dataValues?.LogOut,
-              "i am in permission check then"
-            );
             let logout = res15?.dataValues?.LogOut;
             if (logout == 1) {
               return res.status(402).json({ response: "Permisson Changed" });

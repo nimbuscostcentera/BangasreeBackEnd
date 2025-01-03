@@ -22,7 +22,7 @@ class Custdetailpayment {
         PaymentType = null,
         LotId = null,
       } = req.body;
-      // console.log(req.body, "in show service");
+     
       var NotAgentPayment = -1;
       if (
         (req.body.NotAgentPayment !== "" &&

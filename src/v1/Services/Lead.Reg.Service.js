@@ -7,7 +7,6 @@ const bcrypt = require("bcryptjs");
 const Pwd = bcrypt.genSaltSync(10);
 class LaedRegService {
   async LeadReg(req, res, next) {
-    console.log(req.body);
     try {
       const {
         AgentCode,
@@ -39,7 +38,7 @@ class LaedRegService {
         CompanyCode,
         BranchId,
         FollowUpDate,
-        AreaID
+        AreaID,
       } = req.body;
       const uuid = uuidv4();
       // const hashPassword = bcrypt.hashSync(password, Pwd);
@@ -94,10 +93,10 @@ class LaedRegService {
                       NomineePhoto: NomineePhoto,
                       Nomineesignature: Nomineesignature,
                       Customersignature: Customersignature,
-                      BranchId:BranchId,
-                      FollowUpDate:FollowUpDate,
+                      BranchId: BranchId,
+                      FollowUpDate: FollowUpDate,
                       Status: 3,
-                      AreaID:AreaID
+                      AreaID: AreaID,
                     })
                       .then(() => {
                         return res.status(200).json({

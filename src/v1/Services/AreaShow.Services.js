@@ -28,7 +28,6 @@ class ShowAreaService {
         })
         .then(async (res2) => {
           if (res2.length != 0) {
-            console.log(res2);
             res.status(200).json({ errmsg: false, response: res2 });
           } else {
             res.status(200).json({

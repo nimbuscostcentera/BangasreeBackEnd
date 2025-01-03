@@ -6,28 +6,27 @@ class ApproveSuperUserService {
     try {
       var Agntsw;
       const { Status, UUid, SuperUserID } = req.body;
-     
-        console.log(req.body);
-        Agntsw = await sq
-          .query(
-            "Update superusermasters set Status=:st where SuperUserID in(:SuperUserID) ",
-            {
-              replacements: { st: Status, SuperUserID: SuperUserID },
-              type: QueryTypes.UPDATE,
-            }
-          )
-          .then((res2) => {
-            console.log("success :", res2);
-            return res
-              .status(200)
-              .json({ errmsg: false, response: "Update successful" });
-          })
-          .catch((err) => {
-            console.log(err);
-            return res.status(500).json({ errmsg: true, response: err });
-          });
-        console.log("service1 ok");
-      
+
+      Agntsw = await sq
+        .query(
+          "Update superusermasters set Status=:st where SuperUserID in(:SuperUserID) ",
+          {
+            replacements: { st: Status, SuperUserID: SuperUserID },
+            type: QueryTypes.UPDATE,
+          }
+        )
+        .then((res2) => {
+          console.log("success :", res2);
+          return res
+            .status(200)
+            .json({ errmsg: false, response: "Update successful" });
+        })
+        .catch((err) => {
+          console.log(err);
+          return res.status(500).json({ errmsg: true, response: err });
+        });
+      console.log("service1 ok");
+
       return Agntsw;
     } catch (error) {
       console.log(error);

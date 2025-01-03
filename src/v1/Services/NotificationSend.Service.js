@@ -39,18 +39,18 @@ class NotificationSendService {
       var i = 0;
       var flag = 0;
       var length1 = 0;
-      console.log(req.body);
+
       if (TicketId == "") {
         length1 = rid.length;
         await NotificationHeaders.create({
           CompanyCode: CompanyCode,
           Subject: Subject,
           Close: 0,
-        }).then(async (RegRes1) => {
+        })
+          .then(async (RegRes1) => {
             tktid = RegRes1.dataValues.TicketId;
             console.log(tktid, RegRes1, "tk");
-            for (i = 0; i < length1; i++) 
-            {
+            for (i = 0; i < length1; i++) {
               var newobj = rid[i];
               await NotificationDetails.create({
                 TicketId: tktid,
@@ -61,7 +61,8 @@ class NotificationSendService {
                 FromUserName: senderName,
                 Message: Message,
                 seen: 0,
-              }).then(async (RegRes2) => {
+              })
+                .then(async (RegRes2) => {
                   flagsent = 1;
                   console.log(RegRes2);
                 })
@@ -74,18 +75,17 @@ class NotificationSendService {
                     err,
                   });
                 });
-              if (flagsent == 0) 
-              {
+              if (flagsent == 0) {
                 break;
               }
             }
-            if (flagsent == 1) 
-            {
+            if (flagsent == 1) {
               return res
                 .status(200)
                 .json({ errmsg: false, response: "Sent Successfully" });
             }
-          }).catch((err) => {
+          })
+          .catch((err) => {
             console.log(err);
             return res.status(400).json({
               errMsg: false,
@@ -93,8 +93,7 @@ class NotificationSendService {
               err,
             });
           });
-      }
-      else {
+      } else {
         await NotificationHeaders.findAll({
           where: {
             TicketId: TicketId,

@@ -119,7 +119,6 @@ class SuperUserServices {
             },
           }).then(async (res2) => {
             if (res2.length != 0) {
-              console.log(res2);
               return res.status(200).json({ errmsg: false, response: res2 });
             } else {
               return res.status(200).json({
@@ -200,7 +199,6 @@ class SuperUserServices {
           },
         })
           .then(async (res2) => {
-            //console.log(res2);
             if (res2.length != 0) {
               return res.status(200).json({
                 status: 200,
@@ -310,8 +308,6 @@ class SuperUserServices {
           order: [["CURRDATE", "DESC"]],
         })
           .then(async (res2) => {
-            console.log(res2);
-
             if (res2.length != 0) {
               return res.status(200).json({
                 status: 200,

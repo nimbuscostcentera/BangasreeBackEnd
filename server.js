@@ -9,10 +9,10 @@ const IndexRoute = require("./src/v1/Routes/Index");
 const App = express();
 
 const corsOptions = {
-  origin: '*',
+  origin: "*",
   optionsSuccessStatus: 200,
   // Temporarily allowing all origins for testing
-  // origin: '*', 
+  // origin: '*',
 };
 App.use(cors(corsOptions));
 App.use(express.static("src"));
@@ -25,21 +25,19 @@ App.use(
     extended: true,
   })
 );
-console.log("1");
-//  
+
+//
 
 App.use("/src/v1", IndexRoute);
 
-App.get("/",(req, res)=>{
-  return res.status(200).json({message : "Hi, from bangashree."})
-})
+App.get("/", (req, res) => {
+  return res.status(200).json({ message: "Hi, from bangashree." });
+});
 
 App.listen(8000, (err, res) => {
   if (err) {
     console.log(err);
   } else {
     console.log("port is running");
-  } 
+  }
 });
-
-
