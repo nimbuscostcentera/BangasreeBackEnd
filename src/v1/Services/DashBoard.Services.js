@@ -10,7 +10,8 @@ const moment = require("moment");
 class DashBoardServices {
   async YearlyReport(req, res, next) {
     try {
-      console.log(req.body, "yearly");
+      // console.log(req.body);
+      console.log("in dash");
       var sql = "";
       var obj = {};
       var obj1 = {};
@@ -22,24 +23,26 @@ class DashBoardServices {
       var StartDate = req.body.StartDate;
       var EndDate = req.body.EndDate;
       let bid = req.body.LoggerBranchId;
-      let branchid = req.body.BranchId;
+     // let branchid = req.body.BranchId;
       let SuperUserType = req.body.SuperUserType;
-      let agentCode = req.body.AgentCode;
-      let area = req.body.AreaID;
+      let branchid = req.body.BranchId === "null" ? null : req.body.BranchId;
+      let area = req.body.AreaID === "null" ? null : req.body.AreaID;
+      let agentCode = req.body.AgentCode === "null" ? null : req.body.AgentCode;
       var arr = [];
       var arr1 = [];
 
       let whereClause = {
-        CompanyCode: CompanyCode,
+        CompanyCode: CompanyCode
       };
-
-      if (branchid !== null && branchid !== undefined) {
+      
+      if (branchid !== null && branchid !== undefined && branchid !== "" && branchid !== -1) {
         whereClause.BranchId = branchid;
       }
       BranchMasters.findAll({
-        where: whereClause,
+        where: whereClause
       })
         .then(async (Result) => {
+          console.log(Result, "Yearlycheck");
           var len = Result.length;
           var promises = [];
           for (let i = 0; i < len; i++) {
@@ -47,38 +50,34 @@ class DashBoardServices {
               id: Result[i].dataValues.BranchName,
               data: [],
             };
+            console.log(Result[i].dataValues.BranchId, "id");
             let sql =
               "SELECT um.branchid, bm.BranchName, MONTH(et.CollDate) AS TransactionMonth, YEAR(et.CollDate) AS TransactionYear, SUM(et.CollectedAmt) AS TotalCollection FROM emitrans AS et JOIN usermasters AS um ON et.AgentUUid = um.UUid JOIN branchmasters AS bm ON um.BranchId = bm.BranchId JOIN agentmasters AS AM ON AM.UUid=um.UUid WHERE et.CollDate between :StartDate and :EndDate and (et.PaymentStatus=3 or et.PaymentStatus=1 ) AND um.BranchId =:BranchId ";
-            if (
-              agentCode != null &&
-              agentCode != "" &&
-              agentCode != "undefined"
-            ) {
-              sql = sql + " AM.AgentCode=:agentCode";
-            }
+              if(agentCode != null &&  agentCode != '' &&  agentCode != 'undefined' &&  agentCode != -1)
+              {
+                 sql=sql+" AM.AgentCode=:agentCode"
+              }
 
-            if (area != null && area != "" && area != "undefined") {
-              sql = sql + " et.AreaID=:area";
-            }
-            sql =
-              sql +
-              " GROUP BY um.branchid, bm.BranchName, TransactionMonth, TransactionYear Order by um.branchid ";
+              if(area != null &&  area != '' &&  area != 'undefined' &&  area != -1)
+                {
+                   sql=sql+" et.AreaID=:area"
+                }
+             sql=sql+" GROUP BY um.branchid, bm.BranchName, TransactionMonth, TransactionYear Order by um.branchid "
             let qt = {
               BranchId: Result[i].dataValues.BranchId,
               StartDate: StartDate,
               EndDate: EndDate,
             };
 
-            if (
-              agentCode != null &&
-              agentCode != "" &&
-              agentCode != "undefined"
-            ) {
-              qt.agentCode = agentCode;
-            }
-            if (area != null && area != "" && area != "undefined") {
-              qt.area = area;
-            }
+            if(agentCode != null &&  agentCode != '' &&  agentCode != 'undefined' &&  agentCode != -1)
+              {
+                qt.agentCode=agentCode
+                
+              }
+              if(area != null &&  area != '' &&  area != 'undefined' &&  area != -1)
+                {
+                  qt.area=area
+                }
             let promise = sq
               .query(sql, { replacements: qt, type: QueryTypes.SELECT })
               .then(async (rst) => {
@@ -147,6 +146,8 @@ class DashBoardServices {
         .then((arr) => {
           // Filter out any null values due to errors
           arr = arr.filter((item) => item !== null);
+          console.log(arr, "final");
+          console.log(JSON.stringify(arr, null, 2));
           return res.status(200).json({ errmsg: false, response: arr });
         })
         .catch((err) => {
@@ -155,12 +156,13 @@ class DashBoardServices {
 
       // const users =  AgentMasters.findAll();
     } catch (error) {
-      return res.status(400).json({ status: "FAILED", response: error });
+      return res.status(500).json({ status: "FAILED", response: error });
     }
   }
   async AgentYearlyReport(req, res, next) {
     try {
-      console.log(req.body, "top 5agent ");
+      // console.log(req.body);
+      console.log("in dash", req.body);
       var CompanyCode = req.body.CompanyCode;
       var StartDate = req.body.StartDate;
       var EndDate = req.body.EndDate;
@@ -175,6 +177,7 @@ class DashBoardServices {
       let sql =
         "SELECT Month(CollDate)as TransactionMonth,YEAR(CollDate) as TransactionYear,SUM(CollectedAmt) as TotalCollection FROM emitrans WHERE PaymentStatus in (3,1,2) and AgentUUid=:UUid and colldate between :StartDate and :EndDate GROUP BY  TransactionMonth, TransactionYear";
       let qt = { UUid: UUid, StartDate: StartDate, EndDate: EndDate };
+      console.log(sql, "here is my sql");
       let promise = sq
         .query(sql, { replacements: qt, type: QueryTypes.SELECT })
         .then(async (rst) => {
@@ -224,6 +227,7 @@ class DashBoardServices {
             arr1.push(obj1);
           }
           obj.data = arr1;
+          // console.log(arr1,"i am here");
           return res.status(200).json({ response: [obj] });
         })
         .catch((err) => {
@@ -237,8 +241,6 @@ class DashBoardServices {
   }
   async DuePayments(req, res, next) {
     try {
-      console.log(req.body, "due");
-
       var sql = "";
       var qt = {};
       var date = new Date();
@@ -272,8 +274,6 @@ class DashBoardServices {
   }
   async Card(req, res, next) {
     try {
-      console.log(req.body, "card");
-
       var sql = "";
       var obj = {};
       var obj1 = {};
@@ -293,22 +293,88 @@ class DashBoardServices {
       var qt = {};
       var Utype = req.body.Utype;
       var UUid = req.body.UUid;
-      var BranchId = req.body.BranchId;
+      // var BranchId = req.body.BranchId;
       var SuperUserType = req.body.SuperUserType;
+      let BranchId = req.body.BranchId === "null" ? null : req.body.BranchId;
+      let area = req.body.AreaID === "null" ? null : req.body.AreaID;
+      let agentCode = req.body.AgentCode === "null" ? null : req.body.AgentCode;
       var today = moment(req.body.today).format("YYYY-MM-DD");
 
       var promises = [];
-
+      console.log(BranchId,area,agentCode,"card request");
       if (Utype == 1) {
         if (SuperUserType == 1) {
-          sql = `SELECT
-          (SELECT COUNT(CustomerID) FROM customermasters WHERE Status=1) AS TotalCust,
-          (SELECT COUNT(AgentID) FROM agentmasters WHERE Status=1) AS TotalAgent,
-          (SELECT COUNT(Id) FROM schemeregisters WHERE MaturityStatus=3) AS TotalMaturedAcc,
-          (SELECT COUNT(SuperUserID) FROM superusermasters WHERE Status=1) AS TotalSuperUser,
-          (SELECT COALESCE(SUM(et.CollectedAmt), 0) FROM emitrans as et where CollDate =:today
-          and et.PaymentType=2 ) AS TotalCollection`;
+          sql = 'SELECT'
+          sql = sql+ '(SELECT COUNT(CustomerID) FROM customermasters JOIN usermasters on  customermasters.UUid = usermasters.UUid   WHERE Status=1'
+          if (BranchId !== null && BranchId !== undefined && BranchId !== "" && BranchId !== -1 ) {
+            console.log(BranchId,"if null");
+            
+          sql = sql+' and usermasters.BranchId=:BranchId '
+          }
+          if ( area !== null &&
+            area !== undefined &&
+            area !== "" && area !== -1 ) {
+            console.log(area,"if null area");
+            
+            sql = sql+' and customermasters.AreaID=:area '
+            }    
+ 
+          if (agentCode !== null && agentCode !== undefined && agentCode !== "" && agentCode !== -1) {
+                sql = sql+' and customermasters.AgentCode=:agentCode '
+                }                     
+          sql = sql+' ) AS TotalCust,'
+          sql = sql+'(SELECT COUNT(AgentID) FROM agentmasters JOIN usermasters on  agentmasters.UUid = usermasters.UUid WHERE Status=1'
+          if (BranchId !== null && BranchId !== undefined && BranchId !== "" && BranchId !== -1) {
+            sql = sql+' and usermasters.BranchId=:BranchId '
+            }    
+          if (area !== null && area !== undefined && area !== "" && area !== -1) {
+              sql = sql+' and agentmasters.AreaID=:area '
+              }    
+          if (agentCode !== null && agentCode !== undefined && agentCode !== "" && agentCode !== -1) {
+                sql = sql+' and agentmasters.AgentCode=:agentCode '
+                } 
+          sql = sql+' ) AS TotalAgent,'
+          sql = sql+'(SELECT COUNT(Id) FROM schemeregisters JOIN usermasters on  schemeregisters.UUid = usermasters.UUid join customermasters on schemeregisters.UUid = customermasters.UUid  WHERE MaturityStatus=3'
+
+          if (BranchId !== null && BranchId !== undefined && BranchId !== "" && BranchId !== -1) {
+            sql = sql+' and usermasters.BranchId=:BranchId '
+            }    
+          if (area !== null && area !== undefined && area !== "" && area !== -1) {
+              sql = sql+' and customermasters.AreaID=:area '
+              }    
+          if (agentCode !== null && agentCode !== undefined && agentCode !== "" && agentCode !== -1) {
+                sql = sql+' and customermasters.AgentCode=:agentCode '
+                } 
+          sql = sql+' ) AS TotalMaturedAcc, '
+          sql = sql+'(SELECT COUNT(SuperUserID) FROM superusermasters JOIN usermasters on  superusermasters.UUid = usermasters.UUid WHERE Status=1'
+          if (BranchId !== null && BranchId !== undefined && BranchId !== "" && BranchId !== -1) {
+            sql = sql+' and usermasters.BranchId=:BranchId '
+            }    
+          // if (area !== null && area !== undefined) {
+          //     sql = sql+' customermasters.AreaID=:area '
+          //     }           
+          sql = sql+') AS TotalSuperUser,'
+          sql = sql+ '(SELECT COALESCE(SUM(et.CollectedAmt), 0) FROM emitrans as et JOIN usermasters on  et.CustomerUUid = usermasters.UUid JOIN agentmasters on  et.AgentUUid = agentmasters.UUid where et.CollDate =:today and et.PaymentType=2' 
+          if (BranchId !== null && BranchId !== undefined && BranchId !== "" && BranchId !== -1) {
+            sql = sql+' and usermasters.BranchId=:BranchId '
+            }    
+          if (area !== null && area !== undefined && area !== "" && area !== -1) {
+              sql = sql+' and et.AreaID=:area '
+              }    
+          if (agentCode !== null && agentCode !== undefined && agentCode !== "" && agentCode !== -1) {
+                sql = sql+' and agentmasters.AgentCode=:agentCode '
+                } 
+          sql = sql+') AS TotalCollection'
           qt.today = today;
+          if (BranchId !== null && BranchId !== undefined && BranchId !== "" && BranchId !== -1) {
+            qt.BranchId = BranchId;
+            }    
+          if (area !== null && area !== undefined && area !== "" && area !== -1) {
+            qt.area = area;
+              }    
+          if (agentCode !== null && agentCode !== undefined && agentCode !== "" && agentCode !== -1) {
+            qt.agentCode = agentCode;
+                } 
         } else {
           sql = `SELECT
           (SELECT COUNT(CM.CustomerID) FROM customermasters AS CM,usermasters AS UM WHERE
@@ -325,6 +391,7 @@ class DashBoardServices {
           qt.BranchId = BranchId;
           qt.today = today;
         }
+console.log("in card");
 
         sq.query(sql, { replacements: qt, type: QueryTypes.SELECT })
           .then(async (result) => {
@@ -361,6 +428,7 @@ class DashBoardServices {
               TotalCollection: result[0].TotalCollection,
               Commission: result[0].Commision || 0,
             };
+            console.log(obj);
             return res.status(200).json({ errmsg: false, response: obj });
           })
           .catch((error) => {
@@ -405,15 +473,54 @@ class DashBoardServices {
   }
   async MaturityReport(req, res, next) {
     try {
+      console.log("in dash");
       var CompanyCode = req.body.CompanyCode;
-      var BranchId = req.body.BranchId;
+     // var BranchId = req.body.BranchId;
       var SuperUserType = req.body.SuperUserType;
+      let BranchId = req.body.BranchId === "null" ? null : req.body.BranchId;
+      let area = req.body.AreaID === "null" ? null : req.body.AreaID;
+      let agentCode = req.body.AgentCode === "null" ? null : req.body.AgentCode;
       let sql = "";
       var arr1 = [];
       var qt = {};
       if (SuperUserType == 1) {
-        sql =
-          "SELECT count(ID) as cnt, MaturityStatus FROM schemeregisters GROUP BY MaturityStatus";
+        sql = "SELECT count(ID) as cnt, MaturityStatus FROM schemeregisters as sr join usermasters AS UM on   UM.UUid=sr.UUid join customermasters as cm on UM.UUid=cm.UUid where sr.CompanyCode=:CompanyCode "
+        if (BranchId !== null && BranchId !== undefined && BranchId !== "" && BranchId !== -1 ) {
+          console.log(BranchId,"if null");
+          
+        sql = sql+' and UM.BranchId=:BranchId '
+        }
+        if ( area !== null &&
+          area !== undefined &&
+          area !== "" && area !== -1 ) {
+          console.log(area,"if null area");
+          
+          sql = sql+' and cm.AreaID=:area '
+          }    
+
+        if (agentCode !== null && agentCode !== undefined && agentCode !== "" && agentCode !== -1) {
+              sql = sql+' and cm.AgentCode=:agentCode '
+              }           
+        sql=sql+"GROUP BY MaturityStatus"
+
+
+        if (BranchId !== null && BranchId !== undefined && BranchId !== "" && BranchId !== -1 ) {
+          console.log(BranchId,"if null");
+          
+          qt.BranchId = BranchId 
+        }
+        if ( area !== null &&
+          area !== undefined &&
+          area !== "" && area !== -1 ) {
+          console.log(area,"if null area");
+          
+          qt.area=area 
+          }    
+
+        if (agentCode !== null && agentCode !== undefined && agentCode !== "" && agentCode !== -1) {
+          qt.agentCode=agentCode 
+              } 
+              qt.CompanyCode=CompanyCode       
       } else {
         sql =
           "SELECT count(sr.ID) as cnt, sr.MaturityStatus FROM schemeregisters as sr,usermasters AS UM WHERE  UM.UUid=sr.UUid  AND UM.BranchId=:BranchId GROUP BY sr.MaturityStatus";
@@ -425,9 +532,13 @@ class DashBoardServices {
         type: QueryTypes.SELECT,
       });
 
+      console.log(rst, "Maturity report");
       var len1 = rst.length;
+      console.log(len1);
 
       for (var j = 0; j < len1; j++) {
+        console.log("in for j");
+        console.log(rst[j], j, "Maturity report1");
 
         let label;
         if (rst[j].MaturityStatus == 1) {
@@ -447,35 +558,54 @@ class DashBoardServices {
         arr1.push(obj1);
       }
 
+      console.log(arr1);
       return res.status(200).json({ pieData: arr1 });
     } catch (error) {
       return res.status(500).json({ status: "FAILED", response: error });
     }
   }
   async topAgent(req, res, next) {
+
+    // let branchid = req.body.BranchId;
+    let SuperUserType = req.body.SuperUserType;
+    let branchid = req.body.BranchId === "null" ? null : req.body.BranchId;
+    let area = req.body.AreaID === "null" ? null : req.body.AreaID;
+    let agentCode = req.body.AgentCode === "null" ? null : req.body.AgentCode;
     let qt = {};
     let arr = [];
-    console.log("top agent", req.body);
-
     let sql2 = `SELECT a.AgentCode,ar.AreaID,a.Name,ar.AreaName,SUM(et.CollectedAmt) as
                 Total_Collection FROM emitrans as et INNER JOIN agentmasters as a  on
                 et.AgentUUid = a.UUid INNER JOIN areamasters as ar on et.AreaID = ar.AreaID
                 WHERE et.AgentUUid=:uuid GROUP by ar.AreaID`;
 
-    let sql1 = `select et.AgentUUid,a.Name,a.AgentCode FROM emitrans as et INNER JOIN 
-                agentmasters as a on et.AgentUUid=a.UUid GROUP by AgentUUid ORDER BY
-                SUM(et.CollectedAmt) DESC limit 5`;
+    let sql1 = 'select et.AgentUUid,a.Name,a.AgentCode FROM emitrans as et INNER JOIN agentmasters as a on et.AgentUUid=a.UUid INNER JOIN usermasters as u on a.UUid=u.UUid'
+    if (branchid !== null && branchid !== undefined && branchid !== "" && branchid !== -1) {
+      sql1 = sql1+' and u.BranchId=:branchid '
+      }  
+      if (area !== null && area !== undefined && area !== "" && area !== -1) {
+        sql1 = sql1+' and a.AreaID=:area '
+          }    
+    
+     sql1= sql1 + ' GROUP by AgentUUid ORDER BY SUM(et.CollectedAmt) DESC limit 5';
+    if (branchid !== null && branchid !== undefined && branchid !== "" && branchid !== -1) {
+      qt.branchid = branchid;
+      }    
+    if (area !== null && area !== undefined && area !== "" && area !== -1) {
+      qt.area = area;
+        }    
 
     let db = await sq
       .query(sql1, { replacements: qt, type: QueryTypes.SELECT })
       .then(async (resp) => {
         let len = resp?.length;
+        console.log(resp, "1st resp");
         if (len == 0) {
           return res.status(200).json({ msg: "no data exist" });
         } else {
           for (let i = 0; i < len; i++) {
             let RespObj = {};
             let trans = {};
+            //console.log(resp[i]?.AgentUUid, "uuid");
             RespObj.AgentName = resp[i]?.Name;
 
             await sq
@@ -520,7 +650,7 @@ class DashBoardServices {
     return db;
   }
   async AreaWiseAgentCollection(req, res, next) {
-    console.log(req.body, "AreaWiseAgentCollection");
+    console.log(req.body, "find me");
     let UUid = req?.body?.LoggerUUid;
     let sql = `select sum(et.collectedAmt)as totalCollection,ar.AreaName from emitrans as et 
     Inner Join customermasters as cm on et.CustomerUUid=cm.UUid inner join  areamasters as ar on 
@@ -550,10 +680,10 @@ class DashBoardServices {
           attributes: ["SessionID", "Session", "StartDate", "EndDate"],
         }).then(async (resp2) => {
           if (resp2.length !== 0) {
-            
+            //  console.log(resp2);
             return res.status(200).json({ errMsg: false, response: resp2 });
           } else {
-            
+            //  console.log("no data", resp2);
             return res
               .status(200)
               .json({ errMsg: false, response: "no data found" });
@@ -566,8 +696,6 @@ class DashBoardServices {
       });
   }
   async LeadToBeFollow(req, res, next) {
-    console.log(req.body, "lead");
-
     let { AgentCode } = req.body;
     let sql = `SELECT CustomerID,CustomerName,FollowUpDate,AgentCode,PhoneNumber from proabablecustomers
      where AgentCode =:AgentCode and FollowUpDate <= now();`;

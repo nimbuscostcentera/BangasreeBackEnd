@@ -1,26 +1,19 @@
 const { LoginService } = require("../Services");
 const { AgentRegService } = require("../Services/index");
-const {
-  CustomerRegService,
-  LeadRegService,
-  SuperRegService,
-} = require("../Services/index");
+const { CustomerRegService,LeadRegService,SuperRegService } = require("../Services/index");
 class AuthController {
   async AgentRegistration(req, res, next) {
-    console.log(req.files, "file name");
+    console.log(req.files,"file name");
     try {
-      const createAgentResponse = await AgentRegService.AgentReg(
-        req,
-        res,
-        next
-      );
+      console.log("controller", req.body);
+      const createAgentResponse = await AgentRegService.AgentReg(req,res,next);
       next();
       return createAgentResponse;
     } catch (err) {
       console.log(err);
       return res.status(400).json("error");
     }
-  }
+  };
   async securelogin(req, res, next) {
     try {
       const AuthResponse = await LoginService.getlogin(req, res, next);
@@ -43,6 +36,7 @@ class AuthController {
     }
   }
 
+  
   async LeadeRegistration(req, res, next) {
     console.log("ok");
     try {
@@ -70,6 +64,7 @@ class AuthController {
       const AuthResponse = await LoginService.ForgetPass(req, res, next);
       next();
       return AuthResponse;
+      
     } catch (err) {
       console.log(err);
       return res.status(400).json({ errMsg: "error", response: err });

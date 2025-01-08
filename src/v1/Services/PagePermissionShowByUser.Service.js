@@ -8,7 +8,7 @@ class PagePermissionShowByUser {
   async ShowUserPermission(req, res, next) {
     try {
       var PermissionShow;
-
+      console.log(req.body);
       const { CompanyCode, Utype, UUid } = req.body;
       if (
         CompanyCode != "" &&

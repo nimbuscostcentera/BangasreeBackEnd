@@ -18,6 +18,7 @@ class PassBookShowService {
         },
       })
         .then(async (res2) => {
+          console.log(res2, "customer data");
           if (res2.length != 0) {
             res.status(200).json({ errmsg: false, response: res2 });
           } else {
@@ -96,6 +97,7 @@ class PassBookShowService {
 
       const { CompanyCode, CustomerID } = req.body;
 
+      console.log(req.body);
       if (
         req.body.CustomerID != "" &&
         req.body.CustomerID != null &&
@@ -136,6 +138,7 @@ class PassBookShowService {
           },
         })
           .then(async (res2) => {
+            console.log(res2, "customer data");
             if (res2.length != 0) {
               res.status(200).json({ errmsg: false, response: res2 });
             } else {
@@ -165,6 +168,7 @@ class PassBookShowService {
     try {
       var obj = {};
       const { CompanyCode, BranchId, Transfer } = req.body;
+      console.log(req.body);
 
       var obj = { Status: 3, CompanyCode: CompanyCode, Transfer: null };
 
@@ -174,6 +178,7 @@ class PassBookShowService {
       await PassBookMaster.findAll({
         where: obj,
       }).then(async (res2) => {
+        console.log(res2, "not assigned data");
         if (res2.length != 0) {
           res.status(200).json({ errmsg: false, response: res2 });
         } else {

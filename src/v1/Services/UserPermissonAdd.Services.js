@@ -34,7 +34,41 @@ class UserPermissonAdd {
                   PageId: newobj?.PageId,
                 },
               }).then(async (res3) => {
+                console.log(newobj?.PageId,"new");
+                console.log(res3.length);
+
+                console.log(res3,i)
                 if (res3.length == 0) {
+                  console.log("ho",)
+                  // console.log(newobj?.ViewPage, newobj?.PageId,newobj?.usertype);
+                  //  UserPermissions.create({
+                  //   UUid: UUid,
+                  //   PageId: newobj?.PageId,
+                  //   Utype: Utype,
+                  //   CompanyCode: CompanyCode,
+                  //   View: newobj?.ViewPage,
+                  //   Add: newobj?.Create,
+                  //   Edit: newobj?.Edit,
+                  //   Del: newobj?.Delete,
+                  //   Default: newobj?.Default,
+                  // })
+                  // console.log(newobj?.ViewPage,"test");
+                  // if(newobj?.Create==undefined)
+                  // {
+                  //   newobj?.Create=0
+                  // }
+                  // if(newobj?.Edit==undefined)
+                  // {
+                  //   newobj?.Edit=0
+                  // }
+                  // if(newobj?.Delete==undefined)
+                  // {
+                  //   newobj?.Delete=0
+                  // }
+                  // if(newobj?.ViewPage==undefined)
+                  // {
+                  //   newobj?.ViewPage=0
+                  // }
                   await sq
                     .query(
                       "INSERT INTO `userpermissions`(`CompanyCode`, `Utype`, `UUid`, `PageId`, `View`, `Add`, `Edit`, `Del`) VALUES (:CompanyCode, :Utype, :UUid, :PageId, :View, :Add, :Edit, :Del)",

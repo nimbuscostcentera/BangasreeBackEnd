@@ -59,6 +59,7 @@ class ShowBranchService {
         await sq
           .query(sql, qt)
           .then(async (res2) => {
+          //  console.log(res2, "branch data");
             if (res2.length != 0) {
               res.status(200).json({ errmsg: false, response: res2 });
             } else {

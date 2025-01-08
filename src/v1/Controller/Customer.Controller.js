@@ -40,6 +40,7 @@ class CustomerController {
 
   async updatecustomer(req, res, next) {
     try {
+      console.log("controller", req.body);
       const UpdateCustomerResponse = await CustomerEditService.CustomerEdit(
         req,
         res,
@@ -58,7 +59,7 @@ class CustomerController {
       console.log("controller1", req.body);
       const ApproveCustomerResponse =
         await CustomerApproveService.CustomerApprove(req, res, next);
-      next();
+        next();
       return ApproveCustomerResponse;
     } catch (err) {
       console.log(err);
@@ -96,6 +97,7 @@ class CustomerController {
   }
   async dropdownscheme(req, res, next) {
     try {
+      console.log(req.body, "in controller");
       const getCustomerResponse = await DopdownSchemeService.DropDownScheme(
         req,
         res,
@@ -110,6 +112,7 @@ class CustomerController {
   }
   async custdetailpayment(req, res, next) {
     try {
+      console.log(req.body, "in controller");
       const getCustomerResponse = await CustDetailPayment.CustomerPaymentShow(
         req,
         res,
@@ -124,6 +127,7 @@ class CustomerController {
   }
   async monthlypayment(req, res, next) {
     try {
+      console.log(req.body, "in controller");
       const getCustomerResponse = await CustDetailPayment.MonthlyPayment(
         req,
         res,
@@ -138,6 +142,7 @@ class CustomerController {
   }
   async walletbalance(req, res, next) {
     try {
+      console.log(req.body, "in controller");
       const getCustomerResponse = await CustDetailPayment.WalletBalance(
         req,
         res,

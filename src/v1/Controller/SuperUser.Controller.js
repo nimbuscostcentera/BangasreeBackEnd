@@ -567,6 +567,7 @@ class SuperUserController {
     }
   }
   async passbooknotassign(req, res, next) {
+    console.log(req.body);
     try {
       const getUserResponse = await PassBookShowService.UnAssignedPBList(
         req,

@@ -9,28 +9,25 @@ class PassBookShowService {
 
       const { CompanyCode, AgentID } = req.body;
 
-      console.log(req.body, "agentjhgkjhgjh");
-      PassBookMaster.findAll({
+      console.log(req.body,"agentjhgkjhgjh");
+       PassBookMaster.findAll({
         where: {
           AgentId: AgentID,
           Status: 1,
           CompanyCode: CompanyCode,
         },
-      })
-        .then(async (res2) => {
-          if (res2.length != 0) {
-            res.status(200).json({ errmsg: false, response: res2 });
-          } else {
-            res.status(200).json({
-              errmsg: true,
-              msg: "No record Found",
-              response: res2,
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      }).then(async (res2) => {
+         console.log(res2,"customer data");
+        if (res2.length != 0) {
+          res.status(200).json({ errmsg: false, response: res2 });
+        } else {
+          res.status(200).json({
+            errmsg: true,
+            msg: "No record Found",
+            response: res2,
+          });
+        }
+      }).catch((err)=>{console.log(err)});
     } catch (error) {
       console.log(error);
       return res
@@ -96,6 +93,7 @@ class PassBookShowService {
 
       const { CompanyCode, CustomerID } = req.body;
 
+      console.log(req.body);
       if (
         req.body.CustomerID != "" &&
         req.body.CustomerID != null &&
@@ -136,6 +134,7 @@ class PassBookShowService {
           },
         })
           .then(async (res2) => {
+            console.log(res2, "customer data");
             if (res2.length != 0) {
               res.status(200).json({ errmsg: false, response: res2 });
             } else {
@@ -165,7 +164,7 @@ class PassBookShowService {
     try {
       var obj = {};
       const { CompanyCode, BranchId } = req.body;
-
+      console.log(req.body);
       await PassBookMaster.findAll({
         where: {
           BranchId: BranchId,
@@ -173,6 +172,7 @@ class PassBookShowService {
           CompanyCode: CompanyCode,
         },
       }).then(async (res2) => {
+        console.log(res2,"not assigned data");
         if (res2.length != 0) {
           res.status(200).json({ errmsg: false, response: res2 });
         } else {

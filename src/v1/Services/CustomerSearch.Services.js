@@ -25,14 +25,17 @@ class SerachCustService {
           )
           .then(async (res2) => {
             if (res2.length != 0) {
+              console.log(res2);
               res.status(200).json({ errmsg: false, response: res2 });
             } else {
-              res.status(200).json({
-                status: 500,
-                errmsg: true,
-                response: res2,
-                msg: "No record Found",
-              });
+              res
+                .status(200)
+                .json({
+                  status: 500,
+                  errmsg: true,
+                  response: res2,
+                  msg: "No record Found",
+                });
             }
           });
         console.log("service1 ok");

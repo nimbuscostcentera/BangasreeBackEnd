@@ -75,7 +75,7 @@ class CollectionSubmissonService {
   }
   async AgentLotList(req, res, next) {
     try {
-     
+      console.log(req.body, "in show service");
       var obj = {};
       const {
         CompanyCode = null,

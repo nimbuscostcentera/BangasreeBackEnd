@@ -1,7 +1,8 @@
 const { sq } = require("../../DataBase/ormdb");
-const { QueryTypes } = require("sequelize");
-const path = require("path");
+const { LogBookPages } = require("../Model/LogBookPage.Model");
+const { LogBookList } = require("../Model/LogBookList.Model");
 const log4js = require("log4js");
+const moment=require("moment")
 function getCurrentDate() {
   const now = new Date();
   const year = now.getFullYear();
@@ -37,15 +38,29 @@ class LoggerInfo {
     );
     next();
   }
-  Logres(req, res, next) {
-    // console.log("in log response");
+  async Logres(req, res, next) {
+     console.log("in log response",req.url);
     const userId = req.headers["user-id"];
     const username = req.body.Phoneno;
     const logger = log4js.getLogger();
-    // console.log(res,res.details);
-    // Get IP address of the user
-
-    // Include obj1 in the existing response object
+    try {
+      if (res.statusCode == 200) {
+        let logarray = await LogBookPages.findAll();
+        for (let item of logarray) {
+          if (item?.dataValues?.URL == req.url) {
+            console.log("black in men");
+            await LogBookList.create({
+              LogBookPageID: item?.dataValues?.ID,
+              UserID: userId || req.body.LoggerID,
+              DateTime:moment().format("YYYY-MM-DD HH:mm:ss"),
+              Request: JSON.stringify(req.body),
+            });
+          }
+        }
+      }
+    } catch(error){
+      console.log(error.message,"why this colabery d");
+    }
 
     logger.info(
       `Sending response: ${res.statusCode}. Response body: ${JSON.stringify(

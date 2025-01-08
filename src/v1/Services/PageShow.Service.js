@@ -6,6 +6,7 @@ const { QueryTypes } = require("sequelize");
 class PageShowService {
   async PageShow(req, res, next) {
     try {
+      // console.log(req.body);
       var usersw;
       const { Utype, CompanyCode, LoggerUUid } = req.body;
       usersw = await sq
@@ -17,6 +18,7 @@ class PageShowService {
           }
         )
         .then(async (res2) => {
+          // console.log(res2);
           if (res2.length != 0) {
             return res.status(200).json({ errmsg: false, response: res2 });
           } else {

@@ -1,11 +1,10 @@
 const { sq } = require("../../DataBase/ormdb");
-const { SuperUserMasters } = require("../Model/SuperUserMaster.Model");
-const { BranchMasters } = require("../Model/BranchMaster.Model");
 const { UserMasters } = require("../Model/UserMaster.Model");
 const { PurityMasters } = require("../Model/PurityMaster.Model");
-const { Goldrates } = require("../Model/Goldrate.Model");
-const { Op } = require("sequelize");
+const { Goldrates } = require("../Model/Goldrate.Model");;
 const { QueryTypes } = require("sequelize");
+const { LogBookList } = require("../Model/LogBookList.Model");
+const { LogBookPages } = require("../Model/LogBookPage.Model");
 class SuperUserServices {
   async getAllSuperUser(req, res, next) {
     try {
@@ -79,7 +78,7 @@ class SuperUserServices {
           })
           .then(async (result) => {
             if (result.length != 0) {
-              console.log(result);
+              //  console.log(result);
               return res.status(200).json({ errMsg: false, response: result });
             } else {
               // console.log(result);
@@ -119,6 +118,7 @@ class SuperUserServices {
             },
           }).then(async (res2) => {
             if (res2.length != 0) {
+              //   console.log(res2);
               return res.status(200).json({ errmsg: false, response: res2 });
             } else {
               return res.status(200).json({
@@ -157,7 +157,7 @@ class SuperUserServices {
                 DESCRIPTION: DESCRIPTION,
               })
                 .then((RegRes) => {
-                  console.log(RegRes);
+                  // console.log(RegRes);
                   return res.status(200).json({
                     errMsg: false,
                     response: "Purity Added Successfully",
@@ -199,6 +199,7 @@ class SuperUserServices {
           },
         })
           .then(async (res2) => {
+            //console.log(res2);
             if (res2.length != 0) {
               return res.status(200).json({
                 status: 200,
@@ -251,7 +252,7 @@ class SuperUserServices {
                 GOLD_RATE: GOLD_RATE,
               })
                 .then((RegRes) => {
-                  console.log(RegRes);
+                  //console.log(RegRes);
                   return res.status(200).json({
                     errMsg: false,
                     response: "Goldrates Added Successfully",
@@ -308,6 +309,8 @@ class SuperUserServices {
           order: [["CURRDATE", "DESC"]],
         })
           .then(async (res2) => {
+            //  console.log(res2);
+
             if (res2.length != 0) {
               return res.status(200).json({
                 status: 200,
@@ -338,6 +341,45 @@ class SuperUserServices {
       console.log(error);
 
       return res.status(500).json({ status: "FAILED", response: error });
+    }
+  }
+  async GetAllLogs(req, res, next) {
+    try {
+      const { utype,StartDate,EndDate } = req.body;
+      console.log(req.body);
+      
+  let logres = await LogBookList.findAll({
+    include: [
+      {
+        model: LogBookPages,
+        required: true,
+        as: "lgp",
+        attributes: [], // Exclude columns from LogBookPages (optional)
+      },
+      {
+        model: UserMasters,
+        required: true,
+        as: "um",
+        attributes: [], // Exclude columns from UserMasters (optional)
+      },
+    ],
+    attributes: [
+      "LogID",
+      "DateTime",
+      "UserID",
+      "Request",
+      [sq.col("lgp.PageName"), "PageName"], // Correctly referencing lgp.PageName
+      [sq.col("lgp.Description"), "Description"], // Correctly referencing lgp.Description
+      [sq.col("um.UserName"), "UserName"], // Correctly referencing um.Name
+    ],
+  });
+      return res.status(200).json({ errmsg: false, response: logres });
+    }
+    catch (error)
+    {
+      console.log(error);
+      
+      return res.status(400).json({errmsg:true,response:error.message})
     }
   }
 }

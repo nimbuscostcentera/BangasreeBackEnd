@@ -10,13 +10,15 @@ const { SchemeRegisters } = require("../Model/SchemeRegister.Model");
 const { ProabableCustomers } = require("../Model/ProabableCustomer.Model");
 const { EmiTrans } = require("../Model/AgentCollection.Model");
 const { v4: uuidv4 } = require("uuid");
-const http = require("http");
+const http = require('http');
 const bcrypt = require("bcryptjs");
 var success = null;
 // const { SELECT } = require("sequelize/types/query-types");
 const Pwd = bcrypt.genSaltSync(10);
 class CustomerRegService {
   async CustomerReg(req, res, next) {
+    console.log(req.body);
+    
     var ac;
     var serial;
     var date = new Date();
@@ -46,7 +48,7 @@ class CustomerRegService {
       SUUid,
       AgentUUid,
       BranchId,
-      AreaID,
+      AreaID
     } = req.body;
     if (
       req.body.LeadId != "" &&
@@ -55,12 +57,12 @@ class CustomerRegService {
     ) {
       LeadId = req.body.LeadId;
     }
-
+    
     var IdProofPhoto = req.body.PhoneNumber + ".jpg";
     var AplicantPhoto = req.body.PhoneNumber + ".jpg";
     var Customersignature = req.body.PhoneNumber + ".jpg";
-    var NomineeIdProofPhoto = req.body.PhoneNumber + ".jpg";
-    var NomineePhoto = req.body.PhoneNumber + ".jpg";
+    var  NomineeIdProofPhoto = req.body.PhoneNumber + ".jpg";
+    var  NomineePhoto = req.body.PhoneNumber + ".jpg";
     var Nomineesignature = req.body.PhoneNumber + ".jpg";
     const uuid = uuidv4();
     var password = "Abc@123";
@@ -110,7 +112,7 @@ class CustomerRegService {
                 IdProofPhoto: IdProofPhoto,
                 Customersignature: Customersignature,
                 password: hashPassword,
-                AreaID: AreaID,
+                AreaID:AreaID,
                 Status: 3,
               })
                 .then(async (respAfter) => {
@@ -163,11 +165,13 @@ class CustomerRegService {
                             Promise.all(CustCreationPromises)
                               .then(async (rsp) => {
                                 console.log("in permission then", success, rsp);
-
+                           
                                 return res.status(200).json({
                                   errmsg: false,
                                   response: "Registration Successful",
+
                                 });
+                                
                               })
                               .catch((err) => {
                                 console.log(
@@ -199,7 +203,7 @@ class CustomerRegService {
                             return res.status(400).json({
                               status: 500,
                               errmsg: true,
-                              response: "Permisson Pages Not Set!!",
+                              response: "Permisson Pages Not Set!!" ,
                             });
                           }
                         });
@@ -208,7 +212,7 @@ class CustomerRegService {
                       console.log(err);
                       return res.status(400).json({
                         errMsg: false,
-                        response: "Registration failed",
+                        response: "Registration failed" ,
                         err,
                       });
                     });
@@ -217,7 +221,7 @@ class CustomerRegService {
                   console.log(err);
                   return res.status(400).json({
                     errMsg: false,
-                    response: "Registration failed",
+                    response: "Registration failed" ,
                     err,
                   });
                 });
