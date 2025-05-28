@@ -48,23 +48,39 @@ class ShowAgntService {
         qt.endDateObj = endDateObj;
       }
       if (
-        (req.body.LoggerBranchId != "" &&
-          req.body.LoggerBranchId != null &&
-          req.body.LoggerBranchId != -1 &&
-          req.body.LoggerBranchId != undefined) &&
-        req.body.SuperUserType!==1
+        req.body.LoggerBranchId != "" &&
+        req.body.LoggerBranchId != null &&
+        req.body.LoggerBranchId != -1 &&
+        req.body.LoggerBranchId != undefined &&
+        req.body.SuperUserType != 1
       ) {
         sql = sql + " and br.BranchId=:bid ";
         qt.bid = req.body.LoggerBranchId;
       }
+            if (
+              req.body.BranchId != "" &&
+              req.body.BranchId != null &&
+              req.body.BranchId != -1 &&
+              req.body.BranchId != undefined &&
+              req.body.SuperUserType == 1
+            ) {
+              sql = sql + " and br.BranchId=:bid ";
+              qt.bid = req.body.BranchId;
+            }
+      if (
+        req.body.AreaID!= "" &&
+        req.body.AreaID!= null &&
+        req.body.AreaID!= -1 &&
+        req.body.AreaID!= undefined 
+      ) {
+        sql = sql + " and a.AreaID=:AreaID ";
+        qt.AreaID = req.body.AreaID;
+      }   
       sql = sql + " order by a.createdAt DESC ";
-console.log(qt,"this is my qt");
       Agntsw = await sq.sync().then(async () => {
-        console.log("i am in agent list");
         await sq
           .query(sql, { replacements: qt, type:QueryTypes.SELECT })
           .then(async (res2) => {
-            console.log(res2);
             if (res2.length != 0) {
               return res.status(200).json({ errmsg: false, response: res2 });
             } else {

@@ -11,7 +11,12 @@ const fs = require("fs");
 require("dotenv").config();
 const dotenv = require("dotenv");
 require("dotenv").config({ path: "../../../.env" });
-
+// const abc =require("../../../.env");
+///env----------------------------------------
+// var ID = process.env.ID;
+// var SECRET = process.env.SECRET;
+// var BUCKET_NAME = process.env.BUCKET_NAME;
+//----------------------------------------------
 var ID = "AKIAU6GDVOUTY4EORUEX";
 var SECRET = "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";
 var BUCKET_NAME = "images.bangasreejewellers.in";
@@ -45,6 +50,7 @@ router.post(
     "/customer-list",PermissonCheck.verifyToken,Logger.Logreq,
     CustomerController.showcustomer,Logger.Logres
   );
+  
   router.post(
     "/lead-list",PermissonCheck.verifyToken,Logger.Logreq,
     CustomerController.showlead,Logger.Logres
@@ -127,10 +133,12 @@ router.post(
     },
     CustomerController.updatecustomer,Logger.Logres
   );
+
   router.post(
     "/customer-approve",Logger.Logreq,
     CustomerController.approvecustomer,Logger.Logres
   );
+
   router.post(
     "/customer-dropdown",PermissonCheck.verifyToken,Logger.Logreq,
     CustomerController.dropdowncustomer,Logger.Logres
@@ -143,6 +151,11 @@ router.post("/cust-detail-payment",PermissonCheck.verifyToken,Logger.Logreq, Cus
 router.post("/monthly-payment",PermissonCheck.verifyToken,Logger.Logreq, CustomerController.monthlypayment,Logger.Logres);
 router.post("/wallet-balance",PermissonCheck.verifyToken,Logger.Logreq, CustomerController.walletbalance,Logger.Logres);
 router.post("/tot-collection",Logger.Logreq, CustomerController.totcollection,Logger.Logres);
-
+router.post(
+  "/agent_transfer",
+  Logger.Logreq,
+  CustomerController.agenttransfer,
+  Logger.Logres
+);
  // module.exports = router;
 module.exports=router;

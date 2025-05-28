@@ -53,7 +53,7 @@ class Custdetailpayment {
   //               sr.SUUid,
   //               sr.StartDate,
   //               sr.EMI,
-  //               cm.AgentCode,
+  //               am.AgentCode,
   //               am.Commision as Commission,
   //               et.PaymentMode,
   //               et.PaymentStatus,
@@ -74,11 +74,12 @@ class Custdetailpayment {
   //           INNER JOIN schemeregisters sr ON et.SchemeRegId = sr.id AND et.CustomerUUid = sr.UUid
   //           INNER JOIN customermasters cm ON sr.UUid = cm.UUid
   //           INNER JOIN schememasters sm ON sr.SUUid = sm.SUUid
-  //           INNER JOIN agentmasters am ON cm.AgentCode = am.AgentCode
+  //           INNER JOIN agentmasters am ON et.AgentUUid = am.UUid
   //           INNER JOIN usermasters um ON et.CustomerUUid = um.UUid
   //           INNER JOIN areamasters Area ON et.AreaID = Area.AreaID
   //           INNER JOIN branchmasters Bm ON um.BranchId = Bm.BranchId
-  //           WHERE  1=1`;
+  //           WHERE 1=1
+  //       `;
 
   //     const queryParams = {};
 
@@ -226,7 +227,7 @@ class Custdetailpayment {
   //         process.env.NODE_ENV === "development" ? error.message : undefined,
   //     });
   //   }
-  // } pagination
+  // }
   async CustomerPaymentShow(req, res, next) {
     try {
       // Destructure with defaults
@@ -293,29 +294,30 @@ class Custdetailpayment {
       const queryParams = {};
 
       // Date range filter
-      if (startDate && endDate) {
+      if (startDate !== undefined && startDate !== null && startDate !== "" && endDate !== undefined && endDate !== null && endDate !== "") {
         baseQuery += ` AND et.CollDate BETWEEN :startDate AND :endDate`;
         queryParams.startDate = `${startDate} 00:00:00`;
         queryParams.endDate = `${endDate} 23:59:59`;
       }
 
       // Other filters
-      if (AgentCode) {
+      if (AgentCode !== undefined && AgentCode !== -1 && AgentCode !== null && AgentCode !== "" && AgentCode !== 0) {
         baseQuery += ` AND cm.AgentCode = :AgentCode`;
         queryParams.AgentCode = AgentCode;
       }
 
-      if (PaymentType) {
+      if (PaymentType !== undefined && PaymentType !== null && PaymentType !== "" && PaymentType !== -1 && PaymentType !== 0) {
         baseQuery += ` AND et.PaymentType = :PaymentType`;
         queryParams.PaymentType = PaymentType;
       }
 
-      if (CustomerID) {
+      if (CustomerID !== -1 && CustomerID !== 0 && CustomerID !== undefined && CustomerID !== null && CustomerID !== "") {
         baseQuery += ` AND cm.CustomerID = :CustomerID`;
         queryParams.CustomerID = CustomerID;
       }
 
       if (
+        PaymentStatus !== 0 &&
         PaymentStatus !== -1 &&
         PaymentStatus !== null &&
         PaymentStatus !== undefined &&
@@ -325,36 +327,53 @@ class Custdetailpayment {
         queryParams.paymentstatus = PaymentStatus;
       }
 
-      if (CollectionId) {
+      if (CollectionId !== -1 &&
+        CollectionId !== null &&
+        CollectionId !== undefined &&
+        CollectionId !== "" &&
+        CollectionId !== 0) {
         baseQuery += ` AND et.CollectionId = :CollectionId`;
         queryParams.CollectionId = CollectionId;
       }
 
-      if (LotId) {
+      if (LotId !== 0 &&
+        LotId !== -1 &&
+        LotId !== null &&
+        LotId !== undefined &&
+        LotId !== "") {
         baseQuery += ` AND et.LotId = :LotId`;
         queryParams.LotId = LotId;
       }
 
-      if (NotAgentPayment === 0 || NotAgentPayment === 1) {
+      if (NotAgentPayment == 0 || NotAgentPayment == 1) {
         baseQuery +=
           NotAgentPayment === 1
             ? ` AND et.NotAgentPayment IS NOT NULL`
             : ` AND et.NotAgentPayment IS NULL`;
       }
 
-      if (SchemeRegId) {
+      if (SchemeRegId !== 0 &&
+        SchemeRegId !== -1 &&
+        SchemeRegId !== "" &&
+        SchemeRegId !== undefined &&
+        SchemeRegId !== null) {
         baseQuery += ` AND sr.Id = :SchemeRegId`;
         queryParams.SchemeRegId = SchemeRegId;
       }
 
       // Branch filter for non-super users
-      if (req.body.LoggerBranchId && req.body.SuperUserType !== 1) {
+      if (req.body.LoggerBranchId !== 0 &&
+        req.body.LoggerBranchId !== undefined &&
+        req.body.LoggerBranchId !== null &&
+        req.body.LoggerBranchId !== "" &&
+        req.body.LoggerBranchId !== -1 &&
+        req.body.SuperUserType !== 1) {
         baseQuery += ` AND um.BranchId = :branchId`;
         queryParams.branchId = req.body.LoggerBranchId;
       }
 
       // Add ordering
-      baseQuery += ` ORDER BY et.createdAt DESC`;
+      baseQuery += ` ORDER BY et.CollDate DESC`;
 
       // Execute the query
       const results = await sq.query(baseQuery, {
@@ -363,7 +382,7 @@ class Custdetailpayment {
       });
 
       // Process results
-      if (results.length === 0) {
+      if (results?.length == 0) {
         return res.status(200).json({
           success: true,
           response: [],
@@ -373,7 +392,7 @@ class Custdetailpayment {
 
       // Process each result
       const processedResults = results.map((item) => {
-        const isPaymentType2 = item.PaymentType === 2;
+        const isPaymentType2 = item.PaymentType == 2;
         const expectedCollection = isPaymentType2 ? item.EMI : item.Regfees;
 
         const commission = isPaymentType2
@@ -412,14 +431,17 @@ class Custdetailpayment {
         req.body.SchemeRegId !== null &&
         req.body.SchemeRegId !== undefined
       ) {
+        console.log("sch");
         SchemeRegId = req.body.SchemeRegId;
       }
+      console.log(req.body, "Month", req.body.SchemeRegId, SchemeRegId);
       MonthlyTrans.findAll({
         where: {
           SchemeRegId: SchemeRegId,
         },
       })
         .then(async (rst) => {
+          console.log(rst);
           if (rst.length !== 0) {
             return res.status(200).json({ errmsg: false, response: rst });
           } else {

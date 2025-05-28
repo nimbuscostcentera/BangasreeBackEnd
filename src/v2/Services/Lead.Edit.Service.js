@@ -41,6 +41,8 @@ class LeadEditService {
         UUid,
         CustomerID,
         BranchId,
+        FollowUpDate,
+        AreaID
       } = req.body;
 
       const DBConnection = await sq
@@ -79,6 +81,8 @@ class LeadEditService {
               Nomineesignature: Nomineesignature,
               Status: Status,
               BranchId:BranchId,
+              FollowUpDate:FollowUpDate,
+              AreaID:AreaID
             },
             {
               where: {
@@ -105,4 +109,4 @@ class LeadEditService {
     }
   }
 }
-module.exports = new LeadEditService();
+module.exports = new LeadEditService(); 

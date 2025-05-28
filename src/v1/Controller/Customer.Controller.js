@@ -37,9 +37,9 @@ class CustomerController {
       return res.status(400).json("error");
     }
   }
-
   async updatecustomer(req, res, next) {
     try {
+      console.log("controller", req.body);
       const UpdateCustomerResponse = await CustomerEditService.CustomerEdit(
         req,
         res,
@@ -52,13 +52,12 @@ class CustomerController {
       return res.status(400).json("error");
     }
   }
-
   async approvecustomer(req, res, next) {
     try {
-      
+      console.log("controller1", req.body);
       const ApproveCustomerResponse =
         await CustomerApproveService.CustomerApprove(req, res, next);
-        next();
+      next();
       return ApproveCustomerResponse;
     } catch (err) {
       console.log(err);
@@ -79,7 +78,6 @@ class CustomerController {
       return res.status(400).json("error");
     }
   }
-
   async dropdowncustomer(req, res, next) {
     try {
       const getCustomerResponse = await DopdownCustomerService.DropDownCustomer(
@@ -96,7 +94,7 @@ class CustomerController {
   }
   async dropdownscheme(req, res, next) {
     try {
-      
+      console.log(req.body, "in controller");
       const getCustomerResponse = await DopdownSchemeService.DropDownScheme(
         req,
         res,
@@ -111,7 +109,7 @@ class CustomerController {
   }
   async custdetailpayment(req, res, next) {
     try {
-      
+      console.log(req.body, "in controller");
       const getCustomerResponse = await CustDetailPayment.CustomerPaymentShow(
         req,
         res,
@@ -126,7 +124,7 @@ class CustomerController {
   }
   async monthlypayment(req, res, next) {
     try {
-      
+      console.log(req.body, "in controller");
       const getCustomerResponse = await CustDetailPayment.MonthlyPayment(
         req,
         res,
@@ -141,7 +139,7 @@ class CustomerController {
   }
   async walletbalance(req, res, next) {
     try {
-      
+      console.log(req.body, "in controller");
       const getCustomerResponse = await CustDetailPayment.WalletBalance(
         req,
         res,
@@ -156,7 +154,22 @@ class CustomerController {
   }
   async totcollection(req, res, next) {
     try {
+      console.log(req, "in controller");
       const getCustomerResponse = await CustDetailPayment.TotCollection(
+        req,
+        res,
+        next
+      );
+      next();
+      return getCustomerResponse;
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json("error");
+    }
+  }
+  async agenttransfer(req, res, next) {
+    try {
+      const getCustomerResponse = await CustomerEditService.AgentTransfer(
         req,
         res,
         next
