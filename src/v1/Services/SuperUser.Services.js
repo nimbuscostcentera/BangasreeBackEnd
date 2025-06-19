@@ -5,6 +5,7 @@ const { Goldrates } = require("../Model/Goldrate.Model");;
 const { QueryTypes } = require("sequelize");
 const { LogBookList } = require("../Model/LogBookList.Model");
 const { LogBookPages } = require("../Model/LogBookPage.Model");
+const { Op } = require("sequelize");
 class SuperUserServices {
   async getAllSuperUser(req, res, next) {
     try {
@@ -343,45 +344,102 @@ class SuperUserServices {
       return res.status(500).json({ status: "FAILED", response: error });
     }
   }
+  // async GetAllLogs(req, res, next) {
+  //   try {
+  //     const { utype,StartDate,EndDate } = req.body;
+  //     console.log(req.body,"in logs");
+
+  //     let whereCondition = {};
+
+  //     if (StartDate && EndDate) {
+  //       whereCondition.createdAt = {
+  //         [Op.between]: [ `${StartDate} 00:00:00`, `${EndDate} 23:59:59`]
+  //       };
+  //     }
+      
+  // let logres = await LogBookList.findAll({
+  //   where: whereCondition,
+  //   include: [
+  //     {
+  //       model: LogBookPages,
+  //       required: true,
+  //       as: "lgp",
+  //       attributes: [], // Exclude columns from LogBookPages (optional)
+  //     },
+  //     {
+  //       model: UserMasters,
+  //       required: true,
+  //       as: "um",
+  //       attributes: [], // Exclude columns from UserMasters (optional)
+  //     },
+  //   ],
+  //   attributes: [
+  //     "LogID",
+  //     "DateTime",
+  //     "UserID",
+  //     "Request",
+  //     [sq.col("lgp.PageName"), "PageName"], // Correctly referencing lgp.PageName
+  //     [sq.col("lgp.Description"), "Description"], // Correctly referencing lgp.Description
+  //     [sq.col("um.UserName"), "UserName"], // Correctly referencing um.Name
+  //   ],
+  // });
+  //     return res.status(200).json({ errmsg: false, response: logres });
+  //   }
+  //   catch (error)
+  //   {
+  //     console.log(error);
+      
+  //     return res.status(400).json({errmsg:true,response:error.message})
+  //   }
+  // }
+
   async GetAllLogs(req, res, next) {
     try {
-      const { utype,StartDate,EndDate } = req.body;
-      console.log(req.body);
-      
-  let logres = await LogBookList.findAll({
-    include: [
-      {
-        model: LogBookPages,
-        required: true,
-        as: "lgp",
-        attributes: [], // Exclude columns from LogBookPages (optional)
-      },
-      {
-        model: UserMasters,
-        required: true,
-        as: "um",
-        attributes: [], // Exclude columns from UserMasters (optional)
-      },
-    ],
-    attributes: [
-      "LogID",
-      "DateTime",
-      "UserID",
-      "Request",
-      [sq.col("lgp.PageName"), "PageName"], // Correctly referencing lgp.PageName
-      [sq.col("lgp.Description"), "Description"], // Correctly referencing lgp.Description
-      [sq.col("um.UserName"), "UserName"], // Correctly referencing um.Name
-    ],
-  });
+      const { utype, StartDate, EndDate } = req.body;
+      console.log(req.body, "in logs");
+  
+      let whereCondition = {};
+  
+      if (StartDate && EndDate) {
+        whereCondition.createdAt = {
+          [Op.between]: [`${StartDate} 00:00:00`, `${EndDate} 23:59:59`]
+        };
+      }
+  
+      let logres = await LogBookList.findAll({
+        where: whereCondition,
+        include: [
+          {
+            model: LogBookPages,
+            required: true,
+            as: "lgp",
+            attributes: [],
+          },
+          {
+            model: UserMasters,
+            required: true,
+            as: "um",
+            attributes: [],
+          },
+        ],
+        attributes: [
+          "LogID",
+          "DateTime",
+          "UserID",
+          "Request",
+          [sq.col("lgp.PageName"), "PageName"],
+          [sq.col("lgp.Description"), "Description"],
+          [sq.col("um.UserName"), "UserName"],
+        ],
+      });
+  
       return res.status(200).json({ errmsg: false, response: logres });
-    }
-    catch (error)
-    {
+    } catch (error) {
       console.log(error);
-      
-      return res.status(400).json({errmsg:true,response:error.message})
+      return res.status(400).json({ errmsg: true, response: error.message });
     }
   }
+  
 }
 
 module.exports = new SuperUserServices();

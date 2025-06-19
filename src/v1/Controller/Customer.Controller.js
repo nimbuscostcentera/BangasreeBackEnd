@@ -57,7 +57,7 @@ class CustomerController {
       console.log("controller1", req.body);
       const ApproveCustomerResponse =
         await CustomerApproveService.CustomerApprove(req, res, next);
-      next();
+        next();
       return ApproveCustomerResponse;
     } catch (err) {
       console.log(err);
@@ -167,19 +167,35 @@ class CustomerController {
       return res.status(400).json("error");
     }
   }
-  async agenttransfer(req, res, next) {
-    try {
-      const getCustomerResponse = await CustomerEditService.AgentTransfer(
-        req,
-        res,
-        next
-      );
-      next();
-      return getCustomerResponse;
-    } catch (err) {
-      console.log(err);
-      return res.status(400).json("error");
+    async agenttransfer(req, res, next) {
+      try {
+        const getCustomerResponse = await CustomerEditService.AgentTransfer(
+          req,
+          res,
+          next
+        );
+        next();
+        return getCustomerResponse;
+      } catch (err) {
+        console.log(err);
+        return res.status(400).json("error");
+      }
     }
-  }
+
+    async custpaymenthistory(req, res, next) {
+      try {
+        console.log(req.body, "in controller");
+        const getCustomerResponse = await CustDetailPayment.CustPaymentHistory(
+          req,
+          res,
+          next
+        );
+        next();
+        return getCustomerResponse;
+      } catch (err) {
+        console.log(err);
+        return res.status(400).json("error");
+      }
+    }
 }
 module.exports = new CustomerController();

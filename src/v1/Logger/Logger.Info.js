@@ -24,7 +24,7 @@ class LoggerInfo {
     // const userId = req.headers['user-id'];
     const userId = req.body.LoggerID;
     const logger = log4js.getLogger();
-
+    console.log("black in men",req.url);
     // Get IP address of the user
     const ipAddress = req.ip;
     var body = {};
@@ -45,17 +45,24 @@ class LoggerInfo {
     const logger = log4js.getLogger();
     try {
       if (res.statusCode == 200) {
-        let logarray = await LogBookPages.findAll();
-        for (let item of logarray) {
-          if (item?.dataValues?.URL == req.url) {
-            console.log("black in men");
+        let logarray = await LogBookPages.findOne(
+          {where:{
+            URL : req.url
+          }}
+        );
+  
+          if (logarray.id) {
+            console.log("black in men",req.url);
             await LogBookList.create({
               LogBookPageID: item?.dataValues?.ID,
               UserID: userId || req.body.LoggerID,
               DateTime:moment().format("YYYY-MM-DD HH:mm:ss"),
               Request: JSON.stringify(req.body),
+              remark:req.url
             });
           }
+        else{
+          return;
         }
       }
     } catch(error){

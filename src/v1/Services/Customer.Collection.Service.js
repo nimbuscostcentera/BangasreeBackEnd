@@ -714,7 +714,9 @@ class CustomerCollectionService {
                   var yr = CollDate.getFullYear().toString();
                    month = mnth + "-" + yr;
                   await EmiTrans.update({
-                    CollectedAmt:CollectedAmt},
+                    CollectedAmt: CollectedAmt,
+                    PaymentMode
+                  },
                     {where:{
                       CollectionId:CollectionId 
                     }}

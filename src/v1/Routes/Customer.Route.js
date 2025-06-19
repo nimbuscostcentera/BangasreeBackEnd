@@ -157,5 +157,7 @@ router.post(
   CustomerController.agenttransfer,
   Logger.Logres
 );
+
+router.post("/custpayment-history",PermissonCheck.verifyToken,Logger.Logreq, CustomerController.custpaymenthistory,Logger.Logres);
  // module.exports = router;
 module.exports=router;
